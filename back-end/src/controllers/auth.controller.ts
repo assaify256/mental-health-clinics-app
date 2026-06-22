@@ -1,11 +1,11 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import {
     checkEmail,
     createUser,
     hashPassword,
 } from "../services/sign-up.service.ts";
 
-export const signUpController = async (req: Request, res: Response, next) => {
+export const signUpController = async (req: Request, res: Response, next:NextFunction) => {
     try {
         const email = req.body.email;
         const password = req.body.password;
