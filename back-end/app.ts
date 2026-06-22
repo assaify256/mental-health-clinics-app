@@ -5,6 +5,7 @@ import { store } from "./src/libs/session-config.ts";
 import cors from "cors";
 import { signUpController } from "./src/controllers/auth.controller.ts";
 import authRoutes from "./src/routes/auth.routes.ts";
+import session from "express-session";
 
 const PORT = 8080;
 const app = express();
@@ -12,6 +13,21 @@ const app = express();
 //Middleware
 app.use(cors());
 app.use(express.json());
+app.use(
+    session({
+        secret: "secret",
+        resave: false,
+        name: "connect.sid",
+        store: store,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+            maxAge: 1000 * 60 * 60 * 24,
+        },
+    }),
+);
 
 //assign routes
 createRoutes(app);
