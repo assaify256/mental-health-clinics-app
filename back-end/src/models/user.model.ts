@@ -3,14 +3,14 @@ import sequelize from "../libs/db-config.ts";
 
 interface UserAttributes {
     email: string;
-    password_hash: string;
+    passwordHash: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
 
 class User extends Model<UserAttributes> implements UserAttributes {
     declare public email: string;
-    declare public password_hash: string;
+    declare public passwordHash: string;
     declare public readonly createdAt: Date;
     declare public readonly updatedAt: Date;
 }
@@ -22,7 +22,7 @@ User.init(
             unique: true,
             allowNull: false,
         },
-        password_hash: {
+        passwordHash: {
             type: DataTypes.STRING,
             allowNull: false,
         },

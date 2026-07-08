@@ -14,7 +14,7 @@ export const hashPassword = async (password: string) => {
 export const createUser = async (email: string, hashedPassword: string) => {
     const isUserCreated = await User.create({
         email: email,
-        password_hash: hashedPassword,
+        passwordHash: hashedPassword,
     });
     return isUserCreated !== null;
 };
@@ -25,7 +25,7 @@ export const compareHashedPassword = async (
 ) => {
     const user = await User.findOne({ where: { email: email } });
     if (user) {
-        return await bcrypt.compare(password, user.password_hash);
+        return await bcrypt.compare(password, user.passwordHash);
     }
 };
 
