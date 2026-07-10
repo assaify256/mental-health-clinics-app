@@ -1,7 +1,8 @@
-import CustomCard from "@/components/custom-components/admin/home/custom-card.admin";
-import CustomChartAdmin from "@/components/custom-components/admin/home/custom-chart.admin";
-import CustomQuickList from "@/components/custom-components/admin/home/custom-quick-action.admin";
-import CustomTableAdminHome, { TableData } from "@/components/custom-components/admin/home/custom-table-home.admin";
+import CustomCard from "@/custom-components/admin/custom-card.admin";
+import CustomChartAdmin from "@/custom-components/admin/home/custom-chart.admin";
+import CustomQuickList from "@/custom-components/admin/home/custom-quick-action.admin";
+import CustomTableAdminHome from "@/custom-components/admin/home/custom-table-home.admin";
+import { homeTable } from "@/dummy-data/table.admin";
 
 import {
     Calendar,
@@ -11,30 +12,11 @@ import {
 } from "lucide-react";
 
 
-const dummyTableData: TableData[] = [
-    {
-        id: 1,
-        client: "Alice Johnson",
-        professional: "alice@example.com",
-        dateTime: "06-06-2026 10:00",
-        status: "Pending",
-    },
-    {
-        id: 2,
-        client: "Alice Johnson",
-        professional: "alice@example.com",
-        dateTime: "06-06-2026 10:00",
-        status: "Pending",
-    },
-    
-];
+
 
 export default function Page() {
     return (
         <div className="flex flex-col p-8">
-            {/* <header className="flex flex-row">
-                <div></div>
-            </header> */}
             <h1 className="text-3xl">Admin Dashboard</h1>
             <p>Welcome back! Here's an overview of your clinic.</p>
             <div className="flex flex-row">
@@ -76,7 +58,7 @@ export default function Page() {
             <div className="flex flex-row">
                 <CustomTableAdminHome
                     className="mt-4 flex-1"
-                    data={dummyTableData}
+                    data={homeTable}
                 />
             </div>
         </div>

@@ -16,19 +16,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { AppointmentTable } from "@/dummy-data/table.admin";
 import { Trash } from "lucide-react";
 
-export interface TableData {
-    id: number | string;
-    client: string;
-    professional: string;
-    dateTime: string;
-    status: "Pending" | "Confirmed" | "Completed" | "Canceled";
-    notes: string;
-}
 
 interface TablePropsInterface extends React.ComponentProps<typeof Card> {
-    data: TableData[];
+    data: AppointmentTable[];
 }
 
 const options = ["Pending", "Confirmed", "Completed", "Canceled"];

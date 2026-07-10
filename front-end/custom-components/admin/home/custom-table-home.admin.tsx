@@ -1,4 +1,5 @@
-import { Card, CardContent } from "../../../ui/card";
+import { HomeTable } from "@/dummy-data/table.admin";
+import { Card, CardContent } from "../../../components/ui/card";
 import {
     Table,
     TableBody,
@@ -6,18 +7,12 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../../../ui/table";
+} from "../../../components/ui/table";
 
-export interface TableData {
-    id: number | string;
-    client: string;
-    professional: string;
-    dateTime: string;
-    status: "Pending" | "Confirmed" | "Completed";
-}
+
 
 interface TablePropsInterface {
-    data: TableData[];
+    data: HomeTable[];
     className: string;
 }
 

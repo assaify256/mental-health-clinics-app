@@ -1,6 +1,6 @@
 "use client";
 
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import {
     CalendarClock,
     CalendarDays,

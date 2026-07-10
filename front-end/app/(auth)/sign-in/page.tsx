@@ -2,7 +2,7 @@
 //Components
 
 import Image from "next/image";
-import { LoginForm } from "@/components/custom-components/general/login-form";
+import { LoginForm } from "@/custom-components/general/login-form";
 
 // Assets
 import Logo from "@/public/logo.png";

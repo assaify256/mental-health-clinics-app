@@ -1,7 +1,7 @@
 "use client";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Bar, BarChart } from "recharts";
-import { Card, CardContent } from "../../../ui/card";
+import { Card, CardContent } from "../../../components/ui/card";
 
 const chartConfig = {
     desktop: {

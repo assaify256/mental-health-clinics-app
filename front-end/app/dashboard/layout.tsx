@@ -21,7 +21,7 @@ import {
     CreditCard,
     House,
 } from "lucide-react";
-import CustomSidebarMenu from "@/components/custom-components/admin/custom-sidebar-menu"
+import CustomSidebarMenu from "@/custom-components/admin/custom-sidebar-menu"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
