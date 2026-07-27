@@ -1,11 +1,14 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../libs/db-config.ts";
-import Client from "./client.model.ts";
 
 interface AppointmentAttributes {
-    dateTime: string;
-    status: "Pending" | "Confirmed" | "Completed" | "Canceled";
-    clientId : number;
+    id: number;
+    professionalId: number | null;
+    clientId: number;
+    scheduledStart: Date | null;
+    scheduledEnd: Date | null;
+    status: "pending" | "confirmed" | "completed" | "cancelled";
+    notes: string | null;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -14,42 +17,70 @@ class Appointment
     extends Model<AppointmentAttributes>
     implements AppointmentAttributes
 {
-    declare public dateTime: string;
-    declare public status: "Pending" | "Confirmed" | "Completed" | "Canceled";
+    declare public id: number;
+    declare public professionalId: number | null;
     declare public clientId: number;
+    declare public scheduledStart: Date | null;
+    declare public scheduledEnd: Date | null;
+    declare public status: "pending" | "confirmed" | "completed" | "cancelled";
+    declare public notes: string | null;
     declare public readonly createdAt: Date;
     declare public readonly updatedAt: Date;
 }
 
 Appointment.init(
     {
-        dateTime: {
-            type: DataTypes.DATE,
-            unique: false,
-            allowNull: false,
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
         },
-        status: {
-            type: DataTypes.ENUM(
-                "Pending",
-                "Confirmed",
-                "Completed",
-                "Canceled",
-            ),
-            unique: false,
-            allowNull: false,
+        professionalId: {
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            references: {
+                model: "professionals",
+                key: "id",
+            },
         },
-        clientId : {
+        clientId: {
             type: DataTypes.INTEGER,
             allowNull: false,
             references: {
-                model: Client,
-                key: "id"
-            }
-        }
+                model: "clients",
+                key: "id",
+            },
+        },
+        scheduledStart: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        scheduledEnd: {
+            type: DataTypes.DATE,
+            allowNull: true,
+        },
+        status: {
+            type: DataTypes.ENUM(
+                "pending",
+                "confirmed",
+                "completed",
+                "cancelled",
+            ),
+            allowNull: false,
+            defaultValue: "pending",
+        },
+        notes: {
+            type: DataTypes.TEXT,
+            allowNull: true,
+        },
     },
     {
         sequelize,
         tableName: "appointments",
+        indexes: [
+            { fields: ["professionalId", "scheduledStart"] },
+            { fields: ["clientId", "scheduledStart"] },
+        ],
     },
 );
 
