@@ -41,7 +41,6 @@ const menuItem = {
 export default function CustomSidebarMenu() {
     const path = usePathname();
     const role = "admin";
-    console.log(path);
     const isHomePath = path === `/dashboard/${role}`;
     return (
         <SidebarMenu>

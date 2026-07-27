@@ -21,7 +21,7 @@ import {
     CreditCard,
     House,
 } from "lucide-react";
-import CustomSidebarMenu from "@/custom-components/admin/custom-sidebar-menu"
+import CustomSidebarMenu from "@/custom-components/admin/custom-sidebar-menu";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -42,6 +42,33 @@ export const metadata: Metadata = {
 
 export const menuItem = {
     admin: [
+        {
+            title: "Home",
+            icon: <House />,
+            url: "/dashboard/admin/",
+        },
+        {
+            title: "Appointments",
+            icon: <CalendarClock />,
+            url: "/dashboard/admin/",
+        },
+        {
+            title: "Payments",
+            icon: <CreditCard />,
+            url: "/dashboard/admin/",
+        },
+        {
+            title: "Calendars",
+            icon: <CalendarDays />,
+            url: "/dashboard/admin/",
+        },
+        {
+            title: "Statistics",
+            icon: <ChartColumn />,
+            url: "/dashboard/admin/",
+        },
+    ],
+    professional: [
         {
             title: "Home",
             icon: <House />,
@@ -89,13 +116,14 @@ export default function RootLayout({
         >
             <body className="min-h-full flex flex-col">
                 <SidebarProvider>
-                    <Sidebar className="shadow-2xl " >
+                    <Sidebar className="shadow-2xl ">
                         <SidebarHeader className="flex flex-col bg-white">
                             <div className="flex flex-row items-center">
                                 <Image
                                     className="size-24 mix-blend-multiply"
                                     alt="App Logo"
                                     src={Logo}
+                                    priority
                                 />
                                 <p className="text-sm">
                                     a Fullstack Portfolio by Assaifydeveloper
@@ -117,7 +145,9 @@ export default function RootLayout({
                         </SidebarContent>
                         <SidebarFooter />
                     </Sidebar>
-                    <SidebarInset className="bg-gray-200">{children}</SidebarInset>
+                    <SidebarInset className="bg-gray-200">
+                        {children}
+                    </SidebarInset>
                 </SidebarProvider>
             </body>
         </html>

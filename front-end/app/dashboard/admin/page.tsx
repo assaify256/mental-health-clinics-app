@@ -1,7 +1,17 @@
+import { Card, CardContent } from "@/components/ui/card";
+import { ChartContainer } from "@/components/ui/chart";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import CustomCard from "@/custom-components/admin/custom-card.admin";
-import CustomChartAdmin from "@/custom-components/admin/home/custom-chart.admin";
+import CustomChart from "@/custom-components/admin/home/custom-chart.admin";
 import CustomQuickList from "@/custom-components/admin/home/custom-quick-action.admin";
-import CustomTableAdminHome from "@/custom-components/admin/home/custom-table-home.admin";
+import { chartConfig, chartData } from "@/dummy-data/chart.admin";
 import { homeTable } from "@/dummy-data/table.admin";
 
 import {
@@ -10,9 +20,7 @@ import {
     CircleCheckBig,
     Users,
 } from "lucide-react";
-
-
-
+import { Bar, BarChart } from "recharts";
 
 export default function Page() {
     return (
@@ -52,14 +60,46 @@ export default function Page() {
                 />
             </div>
             <div className="flex flex-row">
-                <CustomChartAdmin className="flex-2 mr-4" />
+                <Card className={`flex-2 mr-4 shadow-2xl`}>
+                    <CardContent>
+                        <CustomChart />
+                    </CardContent>
+                </Card>
                 <CustomQuickList className="flex-1" />
             </div>
             <div className="flex flex-row">
-                <CustomTableAdminHome
-                    className="mt-4 flex-1"
-                    data={homeTable}
-                />
+                <Card className="mt-4 flex-1">
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Client Name</TableHead>
+                                    <TableHead>Professional Name</TableHead>
+                                    <TableHead>Date Time</TableHead>
+                                    <TableHead>Status</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {homeTable.length === 0 ? (
+                                    <TableRow>No Records Found</TableRow>
+                                ) : (
+                                    homeTable.map((row) => (
+                                        <TableRow key={row.id}>
+                                            <TableCell>{row.client}</TableCell>
+                                            <TableCell>
+                                                {row.professional}
+                                            </TableCell>
+                                            <TableCell>
+                                                {row.dateTime}
+                                            </TableCell>
+                                            <TableCell>{row.status}</TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

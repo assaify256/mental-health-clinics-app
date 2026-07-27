@@ -34,7 +34,7 @@ createRoutes(app);
 async function startServer() {
     try {
         await connectDB();
-        associate();
+        associate(() => console.log("Associating tables"));
         await store.sync();
         console.log("Session table synced");
 

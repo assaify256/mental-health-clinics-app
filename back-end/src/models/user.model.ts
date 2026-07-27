@@ -4,6 +4,7 @@ import sequelize from "../libs/db-config.ts";
 interface UserAttributes {
     email: string;
     passwordHash: string;
+    role: string | "Admin" | "Client" | "professional" | null;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -11,6 +12,7 @@ interface UserAttributes {
 class User extends Model<UserAttributes> implements UserAttributes {
     declare public email: string;
     declare public passwordHash: string;
+    declare public role: string | "Admin" | "Client" | "professional";
     declare public readonly createdAt: Date;
     declare public readonly updatedAt: Date;
 }
@@ -26,6 +28,10 @@ User.init(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        role: {
+            type: DataTypes.STRING,
+            allowNull: false
+        }
     },
     {
         sequelize,

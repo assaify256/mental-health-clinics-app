@@ -8,8 +8,8 @@ export default function Page() {
             <h1 className="text-3xl">Manage Appointment</h1>
             <p>View and manage all clinic appointments</p>
             <div className="flex flex-row mt-8">
-                <Tabs className="flex-1">
-                    <TabsList defaultValue="all">
+                <Tabs defaultValue="all" className="flex-1">
+                    <TabsList>
                         <TabsTrigger value="all">All</TabsTrigger>
                         <TabsTrigger value="pending">Pending</TabsTrigger>
                         <TabsTrigger value="confirmed">Confirmed</TabsTrigger>

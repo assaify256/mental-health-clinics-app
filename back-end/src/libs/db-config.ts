@@ -13,7 +13,7 @@ export const connectDB = async () => {
         console.log(
             "Connection to the database has been established successfully.",
         );
-        await sequelize.sync();
+        await sequelize.sync({alter: true});
         console.log("Database synced");
 
 
