@@ -6,6 +6,7 @@ import cors from "cors";
 import session from "express-session";
 import associate from "./src/libs/associate.ts";
 import { runLegacyDataMigration } from "./src/libs/legacy-data-migration.ts";
+import { runBootstrapSeed } from "./src/libs/bootstrap-seed.ts";
 
 const PORT = 8080;
 const app = express();
@@ -40,6 +41,7 @@ async function startServer() {
         // Local iteration strategy (issue #4): sync schema, then backfill legacy data.
         await sequelize.sync({ alter: true });
         await runLegacyDataMigration();
+        await runBootstrapSeed();
 
         const [ownerlessClients] = await sequelize.query(
             "SELECT COUNT(*) as count FROM clients WHERE ownerUserId IS NULL",

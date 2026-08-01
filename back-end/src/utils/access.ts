@@ -1,5 +1,12 @@
 import type { Request } from "express";
-import { resolveClientByUserId, resolveProfessionalByUserId } from "../data/store.ts";
+import {
+    mapClientEntity,
+    mapProfessionalEntity,
+    resolveClientByUserId,
+    resolveProfessionalByUserId,
+} from "../services/data-access.ts";
+import User from "../models/user.model.ts";
+import Profile from "../models/profile.model.ts";
 import { HttpError } from "./http-error.ts";
 
 export const requireUser = (req: Request) => {
@@ -10,20 +17,20 @@ export const requireUser = (req: Request) => {
     return req.user;
 };
 
-export const requireClientProfile = (req: Request) => {
+export const requireClientProfile = async (req: Request) => {
     const user = requireUser(req);
-    const client = resolveClientByUserId(user.id);
+    const client = await resolveClientByUserId(user.id);
 
     if (!client) {
         throw new HttpError(404, "CLIENT_NOT_FOUND", "Client profile not found");
     }
 
-    return client;
+    return mapClientEntity(client);
 };
 
-export const requireProfessionalProfile = (req: Request) => {
+export const requireProfessionalProfile = async (req: Request) => {
     const user = requireUser(req);
-    const professional = resolveProfessionalByUserId(user.id);
+    const professional = await resolveProfessionalByUserId(user.id);
 
     if (!professional) {
         throw new HttpError(
@@ -33,5 +40,10 @@ export const requireProfessionalProfile = (req: Request) => {
         );
     }
 
-    return professional;
+    const linkedUser = await User.findByPk(professional.userId, {
+        include: [{ model: Profile, as: "profile", required: false }],
+    });
+
+    const profile = (linkedUser as User & { profile?: Profile | null } | null)?.profile;
+    return mapProfessionalEntity(professional, profile ?? null);
 };

@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface AppointmentAttributes {
@@ -13,8 +13,13 @@ interface AppointmentAttributes {
     updatedAt?: Date;
 }
 
+type AppointmentCreationAttributes = Optional<
+    AppointmentAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
 class Appointment
-    extends Model<AppointmentAttributes>
+    extends Model<AppointmentAttributes, AppointmentCreationAttributes>
     implements AppointmentAttributes
 {
     declare public id: number;

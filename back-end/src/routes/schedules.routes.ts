@@ -1,9 +1,4 @@
 import express from "express";
-import {
-    nextId,
-    resolveProfessionalByUserId,
-    schedules,
-} from "../data/store.ts";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { sendData } from "../utils/api-response.ts";
 import { validate } from "../middlewares/validate.ts";
@@ -13,6 +8,13 @@ import {
     scheduleSlotUpdateSchema,
 } from "../validators/schedules.schema.ts";
 import { HttpError } from "../utils/http-error.ts";
+import ScheduleSlot from "../models/schedule-slot.model.ts";
+import {
+    mapScheduleSlotEntity,
+    parseIdParam,
+    resolveProfessionalByUserId,
+    toIdString,
+} from "../services/data-access.ts";
 
 const schedulesRoutes = express.Router();
 
@@ -23,14 +25,19 @@ schedulesRoutes.get(
             throw new HttpError(403, "FORBIDDEN", "Only professionals can access own schedule");
         }
 
-        const professional = resolveProfessionalByUserId(req.user.id);
+        const professional = await resolveProfessionalByUserId(req.user.id);
         if (!professional) {
             throw new HttpError(404, "PROFESSIONAL_NOT_FOUND", "Professional profile not found");
         }
 
-        const schedule = schedules.find((item) => item.professionalId === professional.id) ?? {
-            professionalId: professional.id,
-            slots: [],
+        const slots = await ScheduleSlot.findAll({
+            where: { professionalId: professional.id },
+            order: [["dayOfWeek", "ASC"], ["startTime", "ASC"]],
+        });
+
+        const schedule = {
+            professionalId: toIdString(professional.id),
+            slots: slots.map(mapScheduleSlotEntity),
         };
 
         sendData(res, schedule);
@@ -45,7 +52,7 @@ schedulesRoutes.post(
             throw new HttpError(403, "FORBIDDEN", "Only professionals can update schedule slots");
         }
 
-        const professional = resolveProfessionalByUserId(req.user.id);
+        const professional = await resolveProfessionalByUserId(req.user.id);
         if (!professional) {
             throw new HttpError(404, "PROFESSIONAL_NOT_FOUND", "Professional profile not found");
         }
@@ -57,22 +64,15 @@ schedulesRoutes.post(
             isAvailable: boolean;
         };
 
-        let schedule = schedules.find((item) => item.professionalId === professional.id);
-        if (!schedule) {
-            schedule = { professionalId: professional.id, slots: [] };
-            schedules.push(schedule);
-        }
-
-        const slot = {
-            id: nextId("slot"),
+        const slot = await ScheduleSlot.create({
+            professionalId: professional.id,
             dayOfWeek: payload.dayOfWeek,
             startTime: payload.startTime,
             endTime: payload.endTime,
             isAvailable: payload.isAvailable,
-        };
+        });
 
-        schedule.slots.push(slot);
-        sendData(res, slot, 201);
+        sendData(res, mapScheduleSlotEntity(slot), 201);
     }),
 );
 
@@ -84,23 +84,34 @@ schedulesRoutes.patch(
             throw new HttpError(403, "FORBIDDEN", "Only professionals can update schedule slots");
         }
 
-        const professional = resolveProfessionalByUserId(req.user.id);
+        const professional = await resolveProfessionalByUserId(req.user.id);
         if (!professional) {
             throw new HttpError(404, "PROFESSIONAL_NOT_FOUND", "Professional profile not found");
         }
 
-        const schedule = schedules.find((item) => item.professionalId === professional.id);
-        if (!schedule) {
-            throw new HttpError(404, "SCHEDULE_NOT_FOUND", "Schedule not found");
-        }
-
-        const slot = schedule.slots.find((item) => item.id === req.params.slotId);
+        const slot = await ScheduleSlot.findByPk(parseIdParam(req.params.slotId, "slotId"));
         if (!slot) {
             throw new HttpError(404, "SLOT_NOT_FOUND", "Schedule slot not found");
         }
 
-        Object.assign(slot, req.body);
-        sendData(res, slot);
+        if (slot.professionalId !== professional.id) {
+            throw new HttpError(403, "FORBIDDEN", "Cannot update this schedule slot");
+        }
+
+        const body = req.body as Partial<{
+            dayOfWeek: number;
+            startTime: string;
+            endTime: string;
+            isAvailable: boolean;
+        }>;
+
+        if (typeof body.dayOfWeek === "number") slot.dayOfWeek = body.dayOfWeek;
+        if (body.startTime) slot.startTime = body.startTime;
+        if (body.endTime) slot.endTime = body.endTime;
+        if (typeof body.isAvailable === "boolean") slot.isAvailable = body.isAvailable;
+
+        await slot.save();
+        sendData(res, mapScheduleSlotEntity(slot));
     }),
 );
 
@@ -112,23 +123,23 @@ schedulesRoutes.delete(
             throw new HttpError(403, "FORBIDDEN", "Only professionals can delete schedule slots");
         }
 
-        const professional = resolveProfessionalByUserId(req.user.id);
+        const professional = await resolveProfessionalByUserId(req.user.id);
         if (!professional) {
             throw new HttpError(404, "PROFESSIONAL_NOT_FOUND", "Professional profile not found");
         }
 
-        const schedule = schedules.find((item) => item.professionalId === professional.id);
-        if (!schedule) {
-            throw new HttpError(404, "SCHEDULE_NOT_FOUND", "Schedule not found");
-        }
-
-        const index = schedule.slots.findIndex((item) => item.id === req.params.slotId);
-        if (index < 0) {
+        const slot = await ScheduleSlot.findByPk(parseIdParam(req.params.slotId, "slotId"));
+        if (!slot) {
             throw new HttpError(404, "SLOT_NOT_FOUND", "Schedule slot not found");
         }
 
-        const [deleted] = schedule.slots.splice(index, 1);
-        sendData(res, deleted);
+        if (slot.professionalId !== professional.id) {
+            throw new HttpError(403, "FORBIDDEN", "Cannot delete this schedule slot");
+        }
+
+        const payload = mapScheduleSlotEntity(slot);
+        await slot.destroy();
+        sendData(res, payload);
     }),
 );
 

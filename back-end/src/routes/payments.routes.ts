@@ -1,9 +1,4 @@
 import express from "express";
-import {
-    nextId,
-    payments,
-    resolveClientByUserId,
-} from "../data/store.ts";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { sendData, sendPaginated } from "../utils/api-response.ts";
 import { validate } from "../middlewares/validate.ts";
@@ -16,6 +11,12 @@ import {
 import { idParamSchema } from "../validators/common.schema.ts";
 import { HttpError } from "../utils/http-error.ts";
 import { paginate } from "../utils/paginate.ts";
+import Payment from "../models/payment.model.ts";
+import {
+    mapPaymentEntity,
+    parseIdParam,
+    resolveClientByUserId,
+} from "../services/data-access.ts";
 
 const paymentsRoutes = express.Router();
 
@@ -28,7 +29,8 @@ paymentsRoutes.get(
         }
 
         const query = req.query as { format: "csv" | "json"; from?: string; to?: string };
-        let filtered = [...payments];
+        const rows = await Payment.findAll({ order: [["id", "ASC"]] });
+        let filtered = rows.map(mapPaymentEntity);
 
         if (query.from) {
             const fromDate = new Date(query.from);
@@ -46,7 +48,7 @@ paymentsRoutes.get(
         }
 
         const header = "id,clientId,appointmentId,amount,status,createdDate";
-        const rows = filtered.map((payment) =>
+        const csvRows = filtered.map((payment) =>
             [
                 payment.id,
                 payment.clientId,
@@ -57,7 +59,7 @@ paymentsRoutes.get(
             ].join(","),
         );
 
-        const csv = [header, ...rows].join("\n");
+        const csv = [header, ...csvRows].join("\n");
         res.setHeader("Content-Type", "text/csv");
         res.status(200).send(csv);
     }),
@@ -76,15 +78,16 @@ paymentsRoutes.get(
             pageSize: number;
         };
 
-        let filtered = [...payments];
+        const rows = await Payment.findAll({ order: [["id", "ASC"]] });
+        let filtered = rows.map(mapPaymentEntity);
 
         if (req.user?.role === "client") {
-            const client = resolveClientByUserId(req.user.id);
+            const client = await resolveClientByUserId(req.user.id);
             if (!client) {
                 throw new HttpError(404, "CLIENT_NOT_FOUND", "Client profile not found");
             }
 
-            filtered = filtered.filter((payment) => payment.clientId === client.id);
+            filtered = filtered.filter((payment) => payment.clientId === String(client.id));
         }
 
         if (query.mine && req.user?.role !== "admin") {
@@ -121,31 +124,34 @@ paymentsRoutes.post(
             methodId?: string;
         };
 
-        let clientId = body.clientId;
+        let clientId: number | undefined;
         if (req.user?.role === "client") {
-            const client = resolveClientByUserId(req.user.id);
+            const client = await resolveClientByUserId(req.user.id);
             if (!client) {
                 throw new HttpError(404, "CLIENT_NOT_FOUND", "Client profile not found");
             }
 
             clientId = client.id;
+        } else if (body.clientId) {
+            clientId = parseIdParam(body.clientId, "clientId");
         }
 
         if (!clientId) {
             throw new HttpError(400, "CLIENT_REQUIRED", "clientId is required");
         }
 
-        const payment = {
-            id: nextId("payment"),
+        const payment = await Payment.create({
             clientId,
             amount: body.amount,
-            status: "pending" as const,
-            createdDate: new Date().toISOString(),
-            ...(body.appointmentId ? { appointmentId: body.appointmentId } : {}),
-        };
+            status: "pending",
+            appointmentId: body.appointmentId
+                ? parseIdParam(body.appointmentId, "appointmentId")
+                : null,
+            method: body.methodId ?? null,
+            currency: "IDR",
+        });
 
-        payments.push(payment);
-        sendData(res, payment, 201);
+        sendData(res, mapPaymentEntity(payment), 201);
     }),
 );
 
@@ -157,13 +163,18 @@ paymentsRoutes.patch(
             throw new HttpError(403, "FORBIDDEN", "Only admin can update payment status");
         }
 
-        const payment = payments.find((item) => item.id === req.params.id);
+        const payment = await Payment.findByPk(parseIdParam(req.params.id));
         if (!payment) {
             throw new HttpError(404, "PAYMENT_NOT_FOUND", "Payment not found");
         }
 
         payment.status = (req.body as { status: "pending" | "completed" | "failed" }).status;
-        sendData(res, payment);
+        if (payment.status === "completed" && !payment.paidAt) {
+            payment.paidAt = new Date();
+        }
+
+        await payment.save();
+        sendData(res, mapPaymentEntity(payment));
     }),
 );
 

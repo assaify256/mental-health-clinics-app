@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface PaymentAttributes {
@@ -14,7 +14,15 @@ interface PaymentAttributes {
     updatedAt?: Date;
 }
 
-class Payment extends Model<PaymentAttributes> implements PaymentAttributes {
+type PaymentCreationAttributes = Optional<
+    PaymentAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
+class Payment
+    extends Model<PaymentAttributes, PaymentCreationAttributes>
+    implements PaymentAttributes
+{
     declare public id: number;
     declare public appointmentId: number | null;
     declare public clientId: number | null;

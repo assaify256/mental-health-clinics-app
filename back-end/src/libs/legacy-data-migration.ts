@@ -27,6 +27,12 @@ const mapLegacyAppointmentStatus = (raw: string | null | undefined) => {
     return "pending";
 };
 
+const toIsoDateTime = (date: string, time?: string | null) => {
+    const normalizedDate = date.includes("T") ? date.split("T")[0] ?? date : date;
+    const normalizedTime = (time ?? "00:00").slice(0, 5);
+    return `${normalizedDate}T${normalizedTime}:00.000Z`;
+};
+
 export const runLegacyDataMigration = async () => {
     // users.role normalization
     const userHasRole = await hasColumn("users", "role");
@@ -91,6 +97,31 @@ export const runLegacyDataMigration = async () => {
             SET scheduledStart = dateTime
             WHERE scheduledStart IS NULL AND dateTime IS NOT NULL;
         `);
+    }
+
+    // appointments.scheduledStart backfill from legacy scheduledDate + scheduledTime
+    const apptHasScheduledDate = await hasColumn("appointments", "scheduledDate");
+    const apptHasScheduledTime = await hasColumn("appointments", "scheduledTime");
+    if (apptHasScheduledStart && apptHasScheduledDate) {
+        const [rows] = await sequelize.query(
+            `SELECT id, scheduledDate, ${apptHasScheduledTime ? "scheduledTime" : "NULL as scheduledTime"} FROM appointments WHERE scheduledStart IS NULL AND scheduledDate IS NOT NULL`,
+        );
+
+        for (const row of rows as Array<{
+            id: number;
+            scheduledDate: string;
+            scheduledTime: string | null;
+        }>) {
+            await sequelize.query(
+                `UPDATE appointments SET scheduledStart = :scheduledStart WHERE id = :id`,
+                {
+                    replacements: {
+                        id: row.id,
+                        scheduledStart: toIsoDateTime(row.scheduledDate, row.scheduledTime),
+                    },
+                },
+            );
+        }
     }
 
     // appointments.status normalization
