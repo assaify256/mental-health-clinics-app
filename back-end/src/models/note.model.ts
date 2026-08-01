@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface NoteAttributes {
@@ -12,7 +12,15 @@ interface NoteAttributes {
     updatedAt?: Date;
 }
 
-class Note extends Model<NoteAttributes> implements NoteAttributes {
+type NoteCreationAttributes = Optional<
+    NoteAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
+class Note
+    extends Model<NoteAttributes, NoteCreationAttributes>
+    implements NoteAttributes
+{
     declare public id: number;
     declare public authorUserId: number;
     declare public clientId: number | null;

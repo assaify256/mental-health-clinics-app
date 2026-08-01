@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface PrescriptionAttributes {
@@ -16,8 +16,13 @@ interface PrescriptionAttributes {
     updatedAt?: Date;
 }
 
+type PrescriptionCreationAttributes = Optional<
+    PrescriptionAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
 class Prescription
-    extends Model<PrescriptionAttributes>
+    extends Model<PrescriptionAttributes, PrescriptionCreationAttributes>
     implements PrescriptionAttributes
 {
     declare public id: number;

@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 import User from "./user.model.ts";
 
@@ -17,7 +17,15 @@ interface ClientAttributes {
     updatedAt?: Date;
 }
 
-class Client extends Model<ClientAttributes> implements ClientAttributes {
+type ClientCreationAttributes = Optional<
+    ClientAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
+class Client
+    extends Model<ClientAttributes, ClientCreationAttributes>
+    implements ClientAttributes
+{
     declare public id: number;
     declare public ownerUserId: number | null;
     declare public firstName: string | null;

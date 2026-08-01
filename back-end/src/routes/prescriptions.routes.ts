@@ -1,9 +1,4 @@
 import express from "express";
-import {
-    nextId,
-    prescriptions,
-    resolveProfessionalByUserId,
-} from "../data/store.ts";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { sendData, sendPaginated } from "../utils/api-response.ts";
 import { validate } from "../middlewares/validate.ts";
@@ -14,6 +9,12 @@ import {
 } from "../validators/prescriptions.schema.ts";
 import { HttpError } from "../utils/http-error.ts";
 import { paginate } from "../utils/paginate.ts";
+import Prescription from "../models/prescription.model.ts";
+import {
+    mapPrescriptionEntity,
+    parseIdParam,
+    resolveProfessionalByUserId,
+} from "../services/data-access.ts";
 
 const prescriptionsRoutes = express.Router();
 
@@ -26,10 +27,11 @@ prescriptionsRoutes.get(
         }
 
         const query = req.query as unknown as { mine?: boolean; page: number; pageSize: number };
-        let filtered = [...prescriptions];
+        const rows = await Prescription.findAll({ order: [["id", "ASC"]] });
+        let filtered = rows;
 
         if (req.user?.role === "professional" && query.mine) {
-            const professional = resolveProfessionalByUserId(req.user.id);
+            const professional = await resolveProfessionalByUserId(req.user.id);
             if (!professional) {
                 throw new HttpError(404, "PROFESSIONAL_NOT_FOUND", "Professional profile not found");
             }
@@ -37,7 +39,7 @@ prescriptionsRoutes.get(
             filtered = filtered.filter((item) => item.professionalId === professional.id);
         }
 
-        const paged = paginate(filtered, query.page, query.pageSize);
+        const paged = paginate(filtered.map(mapPrescriptionEntity), query.page, query.pageSize);
         sendPaginated(res, paged.data, paged.meta);
     }),
 );
@@ -52,7 +54,7 @@ prescriptionsRoutes.post(
 
         const professional =
             req.user.role === "professional"
-                ? resolveProfessionalByUserId(req.user.id)
+                ? await resolveProfessionalByUserId(req.user.id)
                 : undefined;
 
         const body = req.body as {
@@ -65,21 +67,21 @@ prescriptionsRoutes.post(
             notes?: string;
         };
 
-        const prescription = {
-            id: nextId("prescription"),
-            professionalId: professional?.id ?? "admin-generated",
-            clientId: body.clientId,
+        const prescription = await Prescription.create({
+            professionalId: professional?.id ?? null,
+            clientId: parseIdParam(body.clientId, "clientId"),
             medicineName: body.medicineName,
             dosage: body.dosage,
             frequency: body.frequency,
             duration: body.duration,
-            issuedDate: new Date().toISOString(),
-            ...(body.appointmentId ? { appointmentId: body.appointmentId } : {}),
-            ...(body.notes ? { notes: body.notes } : {}),
-        };
+            appointmentId: body.appointmentId
+                ? parseIdParam(body.appointmentId, "appointmentId")
+                : null,
+            notes: body.notes ?? null,
+            status: "active",
+        });
 
-        prescriptions.push(prescription);
-        sendData(res, prescription, 201);
+        sendData(res, mapPrescriptionEntity(prescription), 201);
     }),
 );
 
@@ -87,12 +89,12 @@ prescriptionsRoutes.get(
     "/:id",
     validate({ params: idParamSchema }),
     asyncHandler(async (req, res) => {
-        const item = prescriptions.find((record) => record.id === req.params.id);
+        const item = await Prescription.findByPk(parseIdParam(req.params.id));
         if (!item) {
             throw new HttpError(404, "PRESCRIPTION_NOT_FOUND", "Prescription not found");
         }
 
-        sendData(res, item);
+        sendData(res, mapPrescriptionEntity(item));
     }),
 );
 
@@ -104,13 +106,33 @@ prescriptionsRoutes.patch(
             throw new HttpError(403, "FORBIDDEN", "Only professional/admin can update prescriptions");
         }
 
-        const item = prescriptions.find((record) => record.id === req.params.id);
+        const item = await Prescription.findByPk(parseIdParam(req.params.id));
         if (!item) {
             throw new HttpError(404, "PRESCRIPTION_NOT_FOUND", "Prescription not found");
         }
 
-        Object.assign(item, req.body);
-        sendData(res, item);
+        const body = req.body as Partial<{
+            clientId: string;
+            appointmentId: string;
+            medicineName: string;
+            dosage: string;
+            frequency: string;
+            duration: string;
+            notes: string;
+        }>;
+
+        if (body.clientId) item.clientId = parseIdParam(body.clientId, "clientId");
+        if (body.appointmentId) {
+            item.appointmentId = parseIdParam(body.appointmentId, "appointmentId");
+        }
+        if (body.medicineName) item.medicineName = body.medicineName;
+        if (body.dosage) item.dosage = body.dosage;
+        if (body.frequency) item.frequency = body.frequency;
+        if (body.duration) item.duration = body.duration;
+        if (typeof body.notes === "string") item.notes = body.notes;
+
+        await item.save();
+        sendData(res, mapPrescriptionEntity(item));
     }),
 );
 
@@ -122,13 +144,14 @@ prescriptionsRoutes.delete(
             throw new HttpError(403, "FORBIDDEN", "Only professional/admin can delete prescriptions");
         }
 
-        const index = prescriptions.findIndex((record) => record.id === req.params.id);
-        if (index < 0) {
+        const item = await Prescription.findByPk(parseIdParam(req.params.id));
+        if (!item) {
             throw new HttpError(404, "PRESCRIPTION_NOT_FOUND", "Prescription not found");
         }
 
-        const [deleted] = prescriptions.splice(index, 1);
-        sendData(res, deleted);
+        const payload = mapPrescriptionEntity(item);
+        await item.destroy();
+        sendData(res, payload);
     }),
 );
 

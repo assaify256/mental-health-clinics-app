@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface ProfileAttributes {
@@ -14,7 +14,15 @@ interface ProfileAttributes {
     updatedAt?: Date;
 }
 
-class Profile extends Model<ProfileAttributes> implements ProfileAttributes {
+type ProfileCreationAttributes = Optional<
+    ProfileAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
+class Profile
+    extends Model<ProfileAttributes, ProfileCreationAttributes>
+    implements ProfileAttributes
+{
     declare public id: number;
     declare public userId: number;
     declare public firstName: string;

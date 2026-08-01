@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface AssessmentAttributes {
@@ -13,8 +13,13 @@ interface AssessmentAttributes {
     updatedAt?: Date;
 }
 
+type AssessmentCreationAttributes = Optional<
+    AssessmentAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
 class Assessment
-    extends Model<AssessmentAttributes>
+    extends Model<AssessmentAttributes, AssessmentCreationAttributes>
     implements AssessmentAttributes
 {
     declare public id: number;

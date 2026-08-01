@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface ScheduleSlotAttributes {
@@ -12,8 +12,13 @@ interface ScheduleSlotAttributes {
     updatedAt?: Date;
 }
 
+type ScheduleSlotCreationAttributes = Optional<
+    ScheduleSlotAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
 class ScheduleSlot
-    extends Model<ScheduleSlotAttributes>
+    extends Model<ScheduleSlotAttributes, ScheduleSlotCreationAttributes>
     implements ScheduleSlotAttributes
 {
     declare public id: number;

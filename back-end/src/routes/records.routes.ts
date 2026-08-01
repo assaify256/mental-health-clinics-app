@@ -1,5 +1,4 @@
 import express from "express";
-import { nextId, records } from "../data/store.ts";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { sendData, sendPaginated } from "../utils/api-response.ts";
 import { validate } from "../middlewares/validate.ts";
@@ -7,6 +6,8 @@ import { idParamSchema, listQuerySchema } from "../validators/common.schema.ts";
 import { recordCreateSchema, recordUpdateSchema } from "../validators/records.schema.ts";
 import { HttpError } from "../utils/http-error.ts";
 import { paginate } from "../utils/paginate.ts";
+import MedicalRecord from "../models/medical-record.model.ts";
+import { mapRecordEntity, parseIdParam } from "../services/data-access.ts";
 
 const recordsRoutes = express.Router();
 
@@ -19,7 +20,8 @@ recordsRoutes.get(
         }
 
         const query = req.query as unknown as { page: number; pageSize: number };
-        const paged = paginate(records, query.page, query.pageSize);
+        const rows = await MedicalRecord.findAll({ order: [["id", "ASC"]] });
+        const paged = paginate(rows.map(mapRecordEntity), query.page, query.pageSize);
         sendPaginated(res, paged.data, paged.meta);
     }),
 );
@@ -39,17 +41,16 @@ recordsRoutes.post(
             content: string;
         };
 
-        const record = {
-            id: nextId("record"),
-            clientId: body.clientId,
+        const record = await MedicalRecord.create({
+            clientId: parseIdParam(body.clientId, "clientId"),
             recordType: body.recordType,
             content: body.content,
-            createdDate: new Date().toISOString(),
-            ...(body.professionalId ? { professionalId: body.professionalId } : {}),
-        };
+            professionalId: body.professionalId
+                ? parseIdParam(body.professionalId, "professionalId")
+                : null,
+        });
 
-        records.push(record);
-        sendData(res, record, 201);
+        sendData(res, mapRecordEntity(record), 201);
     }),
 );
 
@@ -57,12 +58,12 @@ recordsRoutes.get(
     "/:id",
     validate({ params: idParamSchema }),
     asyncHandler(async (req, res) => {
-        const record = records.find((item) => item.id === req.params.id);
+        const record = await MedicalRecord.findByPk(parseIdParam(req.params.id));
         if (!record) {
             throw new HttpError(404, "RECORD_NOT_FOUND", "Record not found");
         }
 
-        sendData(res, record);
+        sendData(res, mapRecordEntity(record));
     }),
 );
 
@@ -74,13 +75,27 @@ recordsRoutes.patch(
             throw new HttpError(403, "FORBIDDEN", "Only professional/admin can update records");
         }
 
-        const record = records.find((item) => item.id === req.params.id);
+        const record = await MedicalRecord.findByPk(parseIdParam(req.params.id));
         if (!record) {
             throw new HttpError(404, "RECORD_NOT_FOUND", "Record not found");
         }
 
-        Object.assign(record, req.body);
-        sendData(res, record);
+        const body = req.body as Partial<{
+            clientId: string;
+            professionalId: string;
+            recordType: string;
+            content: string;
+        }>;
+
+        if (body.clientId) record.clientId = parseIdParam(body.clientId, "clientId");
+        if (body.professionalId) {
+            record.professionalId = parseIdParam(body.professionalId, "professionalId");
+        }
+        if (body.recordType) record.recordType = body.recordType;
+        if (body.content) record.content = body.content;
+
+        await record.save();
+        sendData(res, mapRecordEntity(record));
     }),
 );
 

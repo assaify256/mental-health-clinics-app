@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface ProfessionalAttributes {
@@ -11,8 +11,13 @@ interface ProfessionalAttributes {
     updatedAt?: Date;
 }
 
+type ProfessionalCreationAttributes = Optional<
+    ProfessionalAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
 class Professional
-    extends Model<ProfessionalAttributes>
+    extends Model<ProfessionalAttributes, ProfessionalCreationAttributes>
     implements ProfessionalAttributes
 {
     declare public id: number;

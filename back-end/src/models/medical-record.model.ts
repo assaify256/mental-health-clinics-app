@@ -1,4 +1,4 @@
-import { DataTypes, Model } from "sequelize";
+import { DataTypes, Model, type Optional } from "sequelize";
 import sequelize from "../libs/db-config.ts";
 
 interface MedicalRecordAttributes {
@@ -12,8 +12,13 @@ interface MedicalRecordAttributes {
     updatedAt?: Date;
 }
 
+type MedicalRecordCreationAttributes = Optional<
+    MedicalRecordAttributes,
+    "id" | "createdAt" | "updatedAt"
+>;
+
 class MedicalRecord
-    extends Model<MedicalRecordAttributes>
+    extends Model<MedicalRecordAttributes, MedicalRecordCreationAttributes>
     implements MedicalRecordAttributes
 {
     declare public id: number;

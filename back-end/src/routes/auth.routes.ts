@@ -4,8 +4,15 @@ import { asyncHandler } from "../utils/async-handler.ts";
 import { sendData } from "../utils/api-response.ts";
 import { validate } from "../middlewares/validate.ts";
 import { loginSchema, signupSchema } from "../validators/auth.schema.ts";
-import { nextId, users } from "../data/store.ts";
 import { HttpError } from "../utils/http-error.ts";
+import User from "../models/user.model.ts";
+import Profile from "../models/profile.model.ts";
+import Professional from "../models/professional.model.ts";
+import Client from "../models/client.model.ts";
+import {
+    mapUserEntity,
+    toIdString,
+} from "../services/data-access.ts";
 
 const authRoutes = express.Router();
 
@@ -18,7 +25,7 @@ authRoutes.post(
             password: string;
         };
 
-        const user = users.find((u) => u.email === email);
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             throw new HttpError(401, "INVALID_CREDENTIALS", "Invalid credentials");
         }
@@ -29,7 +36,7 @@ authRoutes.post(
         }
 
         req.session.user = {
-            id: user.id,
+            id: toIdString(user.id),
             email: user.email,
             role: user.role,
         };
@@ -90,31 +97,51 @@ authRoutes.post(
             role: "admin" | "professional" | "client";
         };
 
-        const exists = users.some((user) => user.email === email);
+        const exists = await User.findOne({ where: { email } });
         if (exists) {
             throw new HttpError(409, "EMAIL_IN_USE", "Email already in use");
         }
 
         const passwordHash = await bcrypt.hash(password, 10);
-        const user = {
-            id: nextId("user"),
+        const user = await User.create({
             email,
             passwordHash,
+            role,
+        });
+
+        await Profile.create({
+            userId: user.id,
             firstName,
             lastName,
-            role,
-            createdAt: new Date().toISOString(),
-        };
+        });
 
-        users.push(user);
+        if (role === "professional") {
+            await Professional.create({
+                userId: user.id,
+            });
+        }
+
+        if (role === "client") {
+            await Client.create({
+                ownerUserId: user.id,
+                firstName,
+                lastName,
+                relationshipToOwner: "self",
+            });
+        }
+
+        const mapped = mapUserEntity(
+            user,
+            { firstName, lastName } as unknown as Profile,
+        );
         sendData(
             res,
             {
-                id: user.id,
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                role: user.role,
+                id: mapped.id,
+                email: mapped.email,
+                firstName: mapped.firstName,
+                lastName: mapped.lastName,
+                role: mapped.role,
             },
             201,
         );

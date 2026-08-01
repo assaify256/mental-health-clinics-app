@@ -1,10 +1,4 @@
 import express from "express";
-import {
-    appointments,
-    nextId,
-    resolveClientByUserId,
-    resolveProfessionalByUserId,
-} from "../data/store.ts";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { sendData, sendPaginated } from "../utils/api-response.ts";
 import { validate } from "../middlewares/validate.ts";
@@ -17,6 +11,16 @@ import {
 } from "../validators/appointments.schema.ts";
 import { HttpError } from "../utils/http-error.ts";
 import { paginate } from "../utils/paginate.ts";
+import Appointment from "../models/appointment.model.ts";
+import {
+    buildScheduledStart,
+    getDateTimeParts,
+    mapAppointmentEntity,
+    parseIdParam,
+    resolveClientByUserId,
+    resolveProfessionalByUserId,
+    toIdString,
+} from "../services/data-access.ts";
 
 const appointmentsRoutes = express.Router();
 
@@ -28,6 +32,8 @@ appointmentsRoutes.get(
             month?: string;
         };
 
+        const rows = await Appointment.findAll({ order: [["id", "ASC"]] });
+        const appointments = rows.map(mapAppointmentEntity);
         const month = query.month;
         const filtered = month
             ? appointments.filter((appointment) =>
@@ -66,19 +72,21 @@ appointmentsRoutes.get(
             pageSize: number;
         };
 
+        const rows = await Appointment.findAll({ order: [["id", "ASC"]] });
+        const appointments = rows.map(mapAppointmentEntity);
         let filtered = [...appointments];
         const now = new Date();
 
         if (user.role === "client") {
-            const client = resolveClientByUserId(user.id);
+            const client = await resolveClientByUserId(user.id);
             if (!client) {
                 throw new HttpError(404, "CLIENT_NOT_FOUND", "Client profile not found");
             }
-            filtered = filtered.filter((appointment) => appointment.clientId === client.id);
+            filtered = filtered.filter((appointment) => appointment.clientId === toIdString(client.id));
         }
 
         if (user.role === "professional") {
-            const professional = resolveProfessionalByUserId(user.id);
+            const professional = await resolveProfessionalByUserId(user.id);
             if (!professional) {
                 throw new HttpError(
                     404,
@@ -89,7 +97,7 @@ appointmentsRoutes.get(
 
             if (query.mine || !query.professionalId) {
                 filtered = filtered.filter(
-                    (appointment) => appointment.professionalId === professional.id,
+                    (appointment) => appointment.professionalId === toIdString(professional.id),
                 );
             }
         }
@@ -156,34 +164,32 @@ appointmentsRoutes.post(
             notes?: string;
         };
 
-        let clientId = body.clientId;
+        let clientId: number | undefined;
 
         if (user.role === "client") {
-            const client = resolveClientByUserId(user.id);
+            const client = await resolveClientByUserId(user.id);
             if (!client) {
                 throw new HttpError(404, "CLIENT_NOT_FOUND", "Client profile not found");
             }
 
             clientId = client.id;
+        } else if (body.clientId) {
+            clientId = parseIdParam(body.clientId, "clientId");
         }
 
         if (!clientId) {
             throw new HttpError(400, "CLIENT_REQUIRED", "clientId is required");
         }
 
-        const appointment = {
-            id: nextId("appt"),
+        const appointment = await Appointment.create({
             clientId,
-            professionalId: body.professionalId,
-            scheduledDate: body.scheduledDate,
-            scheduledTime: body.scheduledTime,
-            status: "pending" as const,
-            createdAt: new Date().toISOString(),
-            ...(body.notes ? { notes: body.notes } : {}),
-        };
+            professionalId: parseIdParam(body.professionalId, "professionalId"),
+            scheduledStart: buildScheduledStart(body.scheduledDate, body.scheduledTime),
+            status: "pending",
+            notes: body.notes ?? null,
+        });
 
-        appointments.push(appointment);
-        sendData(res, appointment, 201);
+        sendData(res, mapAppointmentEntity(appointment), 201);
     }),
 );
 
@@ -191,27 +197,27 @@ appointmentsRoutes.get(
     "/:id",
     validate({ params: idParamSchema }),
     asyncHandler(async (req, res) => {
-        const appointment = appointments.find((item) => item.id === req.params.id);
+        const appointment = await Appointment.findByPk(parseIdParam(req.params.id));
         if (!appointment) {
             throw new HttpError(404, "APPOINTMENT_NOT_FOUND", "Appointment not found");
         }
 
         const user = req.user!;
         if (user.role === "client") {
-            const client = resolveClientByUserId(user.id);
+            const client = await resolveClientByUserId(user.id);
             if (!client || appointment.clientId !== client.id) {
                 throw new HttpError(403, "FORBIDDEN", "Cannot access this appointment");
             }
         }
 
         if (user.role === "professional") {
-            const professional = resolveProfessionalByUserId(user.id);
+            const professional = await resolveProfessionalByUserId(user.id);
             if (!professional || appointment.professionalId !== professional.id) {
                 throw new HttpError(403, "FORBIDDEN", "Cannot access this appointment");
             }
         }
 
-        sendData(res, appointment);
+        sendData(res, mapAppointmentEntity(appointment));
     }),
 );
 
@@ -223,13 +229,45 @@ appointmentsRoutes.patch(
             throw new HttpError(403, "FORBIDDEN", "Clients cannot update appointment details");
         }
 
-        const appointment = appointments.find((item) => item.id === req.params.id);
+        const appointment = await Appointment.findByPk(parseIdParam(req.params.id));
         if (!appointment) {
             throw new HttpError(404, "APPOINTMENT_NOT_FOUND", "Appointment not found");
         }
 
-        Object.assign(appointment, req.body);
-        sendData(res, appointment);
+        const body = req.body as Partial<{
+            professionalId: string;
+            clientId: string;
+            scheduledDate: string;
+            scheduledTime: string;
+            notes: string;
+            status: "pending" | "confirmed" | "completed" | "cancelled";
+        }>;
+
+        if (body.professionalId) {
+            appointment.professionalId = parseIdParam(body.professionalId, "professionalId");
+        }
+
+        if (body.clientId) {
+            appointment.clientId = parseIdParam(body.clientId, "clientId");
+        }
+
+        if (body.scheduledDate || body.scheduledTime) {
+            const existing = getDateTimeParts(appointment.scheduledStart ?? appointment.createdAt);
+            const nextDate = body.scheduledDate ?? existing.scheduledDate;
+            const nextTime = body.scheduledTime ?? existing.scheduledTime;
+            appointment.scheduledStart = buildScheduledStart(nextDate, nextTime);
+        }
+
+        if (typeof body.notes === "string") {
+            appointment.notes = body.notes;
+        }
+
+        if (body.status) {
+            appointment.status = body.status;
+        }
+
+        await appointment.save();
+        sendData(res, mapAppointmentEntity(appointment));
     }),
 );
 
@@ -237,7 +275,7 @@ appointmentsRoutes.patch(
     "/:id/status",
     validate({ params: idParamSchema, body: appointmentStatusSchema }),
     asyncHandler(async (req, res) => {
-        const appointment = appointments.find((item) => item.id === req.params.id);
+        const appointment = await Appointment.findByPk(parseIdParam(req.params.id));
         if (!appointment) {
             throw new HttpError(404, "APPOINTMENT_NOT_FOUND", "Appointment not found");
         }
@@ -247,7 +285,7 @@ appointmentsRoutes.patch(
             .status;
 
         if (user.role === "client") {
-            const client = resolveClientByUserId(user.id);
+            const client = await resolveClientByUserId(user.id);
             if (!client || appointment.clientId !== client.id) {
                 throw new HttpError(403, "FORBIDDEN", "Cannot update this appointment");
             }
@@ -262,7 +300,8 @@ appointmentsRoutes.patch(
         }
 
         appointment.status = status;
-        sendData(res, appointment);
+        await appointment.save();
+        sendData(res, mapAppointmentEntity(appointment));
     }),
 );
 
@@ -274,13 +313,14 @@ appointmentsRoutes.delete(
             throw new HttpError(403, "FORBIDDEN", "Only admin can delete appointments");
         }
 
-        const index = appointments.findIndex((item) => item.id === req.params.id);
-        if (index < 0) {
+        const appointment = await Appointment.findByPk(parseIdParam(req.params.id));
+        if (!appointment) {
             throw new HttpError(404, "APPOINTMENT_NOT_FOUND", "Appointment not found");
         }
 
-        const [deleted] = appointments.splice(index, 1);
-        sendData(res, deleted);
+        const payload = mapAppointmentEntity(appointment);
+        await appointment.destroy();
+        sendData(res, payload);
     }),
 );
 
