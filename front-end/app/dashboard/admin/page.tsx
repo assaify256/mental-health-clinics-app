@@ -1,17 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ChartContainer } from "@/components/ui/chart";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import CustomCard from "@/custom-components/admin/custom-card.admin";
-import CustomChart from "@/custom-components/admin/home/custom-chart.admin";
-import CustomQuickList from "@/custom-components/admin/home/custom-quick-action.admin";
-import { chartConfig, chartData } from "@/dummy-data/chart.admin";
+
+import CustomCard from "@/custom-components-old/admin/custom-card.admin";
+import CustomChart from "@/custom-components-old/admin/home/custom-chart.admin";
+import CustomQuickList from "@/custom-components-old/admin/home/custom-quick-action.admin";
+import CustomTable from "@/custom-components/table/table.main";
 import { homeTable } from "@/dummy-data/table.admin";
 
 import {
@@ -20,7 +12,6 @@ import {
     CircleCheckBig,
     Users,
 } from "lucide-react";
-import { Bar, BarChart } from "recharts";
 
 export default function Page() {
     return (
@@ -70,34 +61,15 @@ export default function Page() {
             <div className="flex flex-row">
                 <Card className="mt-4 flex-1">
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Client Name</TableHead>
-                                    <TableHead>Professional Name</TableHead>
-                                    <TableHead>Date Time</TableHead>
-                                    <TableHead>Status</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {homeTable.length === 0 ? (
-                                    <TableRow>No Records Found</TableRow>
-                                ) : (
-                                    homeTable.map((row) => (
-                                        <TableRow key={row.id}>
-                                            <TableCell>{row.client}</TableCell>
-                                            <TableCell>
-                                                {row.professional}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.dateTime}
-                                            </TableCell>
-                                            <TableCell>{row.status}</TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
+                        <CustomTable
+                            headers={[
+                                { key: "client", name: "Client" },
+                                { key: "professional", name: "Professional" },
+                                { key: "date", name: "Date" },
+                                { key: "status", name: "Status" },
+                            ]}
+                            data={homeTable}
+                        />
                     </CardContent>
                 </Card>
             </div>

@@ -8,7 +8,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import CustomCard from "@/custom-components/admin/custom-card.admin";
+import CustomCard from "@/custom-components-old/admin/custom-card.admin";
 import {
     Calendar,
     ClipboardMinus,

@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CustomCard from "@/custom-components/admin/custom-card.admin";
-import CustomTable from "@/custom-components/admin/payment/custom-table.admin";
+import CustomCard from "@/custom-components-old/admin/custom-card.admin";
+import CustomTable from "@/custom-components-old/admin/payment/custom-table.admin";
 import { paymentTable } from "@/dummy-data/table.admin";
 import { CreditCard } from "lucide-react";
 
