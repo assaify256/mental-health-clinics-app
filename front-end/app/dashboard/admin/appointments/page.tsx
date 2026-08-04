@@ -1,4 +1,4 @@
-import CustomTable from "@/custom-components/admin/appointment/custom-table.admin";
+import CustomTable from "@/custom-components/table/table.main";
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs";
 import { appointmentTable } from "@/dummy-data/table.admin";
 
