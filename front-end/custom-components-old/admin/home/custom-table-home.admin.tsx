@@ -1,4 +1,4 @@
-import { HomeTable } from "@/dummy-data/table.admin";
+import { HomeTable } from "@/data/table.admin";
 import { Card, CardContent } from "../../../components/ui/card";
 import {
     Table,
