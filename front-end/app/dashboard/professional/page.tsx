@@ -73,7 +73,7 @@ export default function Page() {
                 <Card className={`shadow-2xl flex-1 my-4`}>
                     <CardContent className="flex flex-col">
                         <h2>Recent Assessment</h2>
-                        <Table className="">
+                        {/* <Table className="">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Client</TableHead>
@@ -102,7 +102,7 @@ export default function Page() {
                                     ))
                                 )}
                             </TableBody>
-                        </Table>
+                        </Table> */}
                     </CardContent>
                 </Card>
             </div>

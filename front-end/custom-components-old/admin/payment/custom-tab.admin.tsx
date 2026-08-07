@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CustomTable from "./custom-table.admin";
-import { paymentTable } from "@/dummy-data/table.admin";
+import { paymentTable } from "@/data/table.admin";
 
 export default function CustomTab({ ...props }) {
     return (

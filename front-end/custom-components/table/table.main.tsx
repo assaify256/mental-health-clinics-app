@@ -45,12 +45,11 @@ export default function CustomTable({
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {data.map((record) => (
-                    <TableRow key={record.id?.toString()}>
-                        {Object.entries(record)
-                            .filter(([key, value]) => key !== "id")
-                            .map(([key, value]) => (
-                                <TableCell key={key}>{value}</TableCell>
+                {data.map((row) => (
+                    <TableRow key={row.id?.toString()}>
+                        {headers
+                            .map((header) => (
+                                <TableCell key={header.key}>{row[header.key]}</TableCell>
                             ))}
                     </TableRow>
                 ))}

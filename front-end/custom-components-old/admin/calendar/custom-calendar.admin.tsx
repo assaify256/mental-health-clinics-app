@@ -4,7 +4,7 @@ import { Calendar, CalendarDayButton } from "@/components/ui/calendar";
 import { ComponentPropsWithoutRef, useRef, useState } from "react";
 import CustomDayButton from "./custom-day-button";
 import { CalendarDay } from "react-day-picker";
-import { appointmentSchedule } from "@/dummy-data/appointment.admin";
+import { appointmentSchedule } from "@/data/appointment.admin";
 
 export default function CustomCalendar({
     ...props
