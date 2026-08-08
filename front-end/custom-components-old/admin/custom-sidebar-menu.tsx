@@ -14,35 +14,7 @@ import {
     House,
 } from "lucide-react";
 import { usePathname } from "next/navigation";
-// const menuItem = {
-//     admin: [
-//         {
-//             title: "Home",
-//             icon: <House />,
-//             url: "/dashboard/admin",
-//         },
-//         {
-//             title: "Appointments",
-//             icon: <CalendarClock />,
-//             url: "/dashboard/admin/appointments",
-//         },
-//         {
-//             title: "Payments",
-//             icon: <CreditCard />,
-//             url: "/dashboard/admin/payments",
-//         },
-//         {
-//             title: "Calendars",
-//             icon: <CalendarDays />,
-//             url: "/dashboard/admin/calendars",
-//         },
-//         {
-//             title: "Statistics",
-//             icon: <ChartColumn />,
-//             url: "/dashboard/admin/statistics",
-//         },
-//     ],
-// };
+
 export default function CustomSidebarMenu({ role }: { role: "admin" | "professional" | "client" }) {
     const path = usePathname();
     const isHomePath = path === `/dashboard/${role}`;
