@@ -92,36 +92,6 @@ export default function Page() {
                         <h2 className="text-lg font-semibold">
                             Recent Assessment
                         </h2>
-                        {/* <Table className="">
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Client</TableHead>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Score</TableHead>
-                                    <TableHead>Date</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {data.length === 0 ? (
-                                    <TableRow>
-                                        <TableCell>No Records Found</TableCell>
-                                    </TableRow>
-                                ) : (
-                                    data.map((row) => (
-                                        <TableRow key={row.id}>
-                                            <TableCell>{row.client}</TableCell>
-                                            <TableCell>
-                                                {row.professional}
-                                            </TableCell>
-                                            <TableCell>
-                                                {row.dateTime}
-                                            </TableCell>
-                                            <TableCell>{row.status}</TableCell>
-                                        </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table> */}
                         <CustomTable data={homeTable} headers={tableHeader} />
                     </CardContent>
                 </Card>
