@@ -1,25 +1,46 @@
-'use client'
+"use client";
 
 // Components
-import Image from "next/image";
-import { SignupForm } from "@/custom-components-old/general/signup-form";
+
+import SignupForm from "@/custom-components/form/sign-up.form";
+import { useRouter } from "next/navigation";
 
 // Assets
-import Logo from "@/public/logo.png";
+
 
 export default function Page() {
+    const router = useRouter();
+        fetch("http://localhost:8080/api/v1/auth/me", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return;
+                }
+                return response.json();
+            })
+            .then((resObj) => {
+                if (resObj) {
+                    resObj.data.role &&
+                        router.push(`/dashboard/${resObj.data.role}`);
+                }
+            });
     return (
-        <div className="flex flex-col gap-4 p-4 md:p-6 h-screen">
-            <div className="flex justify-center md:justify-start">
+        <div className="flex flex-col gap-4 md:p-12 h-screen">
+            {/* <div className="flex justify-center md:justify-start">
                 <a href="#" className="flex items-center font-medium">
                     <div className="flex size-24 items-center justify-center rounded-md bg-primary text-primary-foreground">
                         <Image alt="App Logo" src={Logo} />
                     </div>
                 </a>
-            </div>
+            </div> */}
             <div className="flex flex-1 items-center justify-center">
-                <div className="w-full max-w-xs">
-                    <SignupForm signInLink="/sign-in" />
+                <div className="flex flex-col w-1/3 pb-8">
+                    <SignupForm className="border-2 border-black bg-mauve-50" signInLink="/sign-in" />
                 </div>
             </div>
         </div>
