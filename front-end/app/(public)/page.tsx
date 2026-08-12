@@ -10,22 +10,25 @@ import {
     Users,
 } from "lucide-react";
 
+import logo from "@/public/logo.png";
+import Image from "next/image";
+
 type FeatureCardProps = {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
+    icon: React.ReactNode;
+    title: string;
+    description: string;
 };
 
 type StepProps = {
-  number: string;
-  title: string;
-  description: string;
+    number: string;
+    title: string;
+    description: string;
 };
 
 type StatCardProps = {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
+    icon: React.ReactNode;
+    label: string;
+    value: string;
 };
 
 function App() {
@@ -35,13 +38,9 @@ function App() {
             <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
                 <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
                     <a href="#" className="flex items-center gap-2">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
-                            <HeartPulse size={20} />
+                        <div className="flex h-24 w-24 items-center justify-center rounded-xl bg-indigo-600 text-white">
+                            <Image src={logo} alt="app logo" />
                         </div>
-
-                        <span className="text-lg font-bold tracking-tight">
-                            TheraDesk
-                        </span>
                     </a>
 
                     <div className="hidden items-center gap-8 text-sm font-medium text-slate-600 md:flex">
@@ -435,7 +434,7 @@ function App() {
 
                             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                                 {[
-                                    "Next JS",
+                                    "Next.js",
                                     "Tailwind CSS",
                                     "Express.js",
                                     "Sequelize",
@@ -490,7 +489,6 @@ function App() {
             <footer className="bg-slate-950 py-8 text-slate-400">
                 <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 px-6 text-sm sm:flex-row lg:px-8">
                     <div className="flex items-center gap-2">
-                        <HeartPulse size={17} className="text-indigo-400" />
                         <span>TheraDesk</span>
                     </div>
 
