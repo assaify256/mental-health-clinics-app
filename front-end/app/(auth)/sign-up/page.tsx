@@ -3,35 +3,10 @@
 // Components
 
 import SignupForm from "@/custom-components/form/sign-up.form";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 // Assets
 
 export default function Page() {
-    const router = useRouter();
-    useEffect(() => {
-        fetch("http://localhost:8080/api/v1/auth/me", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    return;
-                }
-                return response.json();
-            })
-            .then((resObj) => {
-                if (resObj) {
-                    resObj.data.role &&
-                        router.push(`/dashboard/${resObj.data.role}`);
-                }
-            });
-    }, []);
-
     return (
         <div className="flex flex-col gap-4 md:p-12 h-screen">
             {/* <div className="flex justify-center md:justify-start">
