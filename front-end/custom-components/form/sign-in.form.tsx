@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Logo from "@/public/logo.png";
 
 import { SubmitEvent, SubmitEventHandler, useState } from "react";
@@ -32,40 +32,8 @@ export function SignInForm({ signUpLink, ...props }: Props) {
     const handleSubmit: SubmitEventHandler<HTMLFormElement> = (
         e: SubmitEvent<HTMLFormElement>,
     ) => {
-        // const result = await login({ email, password });
-        // if (result?.error) {
-        //     setError(result.error);
-        // }
-        const controller = new AbortController();
         e.preventDefault();
-        fetch("http://localhost:8080/api/v1/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({ email, password }),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    setError("Invalid credentials");
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((resObj) => {
-                console.log(resObj);
-                if (resObj) {
-                    const role = resObj.data.user.role;
-                    console.log(role);
-                    return router.push(`/dashboard/${role}`)
-                }
-            })
-            .catch((error) => {
-                console.error(error)
-                controller.abort()
-            });
-        
+        redirect("/dashboard/admin")
     };
     return (
         <Card {...props}>
