@@ -36,6 +36,7 @@ export function SignInForm({ signUpLink, ...props }: Props) {
         // if (result?.error) {
         //     setError(result.error);
         // }
+        const controller = new AbortController();
         e.preventDefault();
         fetch("http://localhost:8080/api/v1/auth/login", {
             method: "POST",
@@ -48,7 +49,7 @@ export function SignInForm({ signUpLink, ...props }: Props) {
             .then((response) => {
                 if (!response.ok) {
                     setError("Invalid credentials");
-                    return;
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 return response.json();
             })
@@ -60,7 +61,11 @@ export function SignInForm({ signUpLink, ...props }: Props) {
                     return router.push(`/dashboard/${role}`)
                 }
             })
-            .catch((error) => console.error(error));
+            .catch((error) => {
+                console.error(error)
+                controller.abort()
+            });
+        
     };
     return (
         <Card {...props}>
