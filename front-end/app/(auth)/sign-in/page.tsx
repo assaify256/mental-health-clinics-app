@@ -10,25 +10,29 @@ export default function LoginPage() {
     const router = useRouter();
     useEffect(() => {
         const controller = new AbortController();
-        const resObj = fetch("http://localhost:8080/api/v1/auth/me", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    return;
-                }
-                return response.json();
+        if (process.env.BACK_END === "true") {
+            fetch("http://localhost:8080/api/v1/auth/me", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
             })
-            .then((resObj) => {
-                if (resObj) {
-                    resObj.data.role &&
-                        router.push(`/dashboard/${resObj.data.role}`);
-                }
-            });
+                .then((response) => {
+                    if (!response.ok) {
+                        console.log("error");
+                        return;
+                    }
+                    return response.json();
+                })
+                .then((resObj) => {
+                    if (resObj) {
+                        resObj.data.role &&
+                            router.push(`/dashboard/${resObj.data.role}`);
+                    }
+                })
+                .catch((error) => console.log(error));
+        }
         return () => {
             controller.abort();
         };

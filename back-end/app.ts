@@ -1,17 +1,17 @@
 import express from "express";
-import createRoutes from "./src/routes/routes.ts";
+import {default as oldRoutes} from "./src/routes/routes.ts";
 import sequelize, { connectDB } from "./src/libs/db-config.ts";
 import sessionConfig, { store } from "./src/libs/session-config.ts";
 import cors from "cors";
-import session from "express-session";
 import associate from "./src/libs/associate.ts";
-import { runLegacyDataMigration } from "./src/libs/legacy-data-migration.ts";
-import { runBootstrapSeed } from "./src/libs/bootstrap-seed.ts";
+import { initiateData } from "./src/libs/initial-data.ts";
+import createRoutes from "./src/routes/v2-bff/routes.ts";
 
 const PORT = 8080;
 const app = express();
 
 //Middleware
+app.use(express.json());
 app.use(
     cors({
         origin: "http://localhost:3000",
@@ -19,7 +19,6 @@ app.use(
     }),
 );
 app.use(sessionConfig);
-app.use(express.json());
 //assign routes
 createRoutes(app);
 
@@ -31,7 +30,8 @@ async function startServer() {
         // Local iteration strategy (issue #4): sync schema, then backfill legacy data.
         await sequelize.sync({ alter: true, force: true });
         // await runLegacyDataMigration();
-        await runBootstrapSeed();
+        // await runBootstrapSeed();
+        await initiateData();
 
         const [ownerlessClients] = await sequelize.query(
             "SELECT COUNT(*) as count FROM clients WHERE ownerUserId IS NULL",

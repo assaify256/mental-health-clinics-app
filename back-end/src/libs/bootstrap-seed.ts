@@ -32,7 +32,9 @@ const ensureUserWithProfile = async ({
         });
     }
 
-    const existingProfile = await Profile.findOne({ where: { userId: user.id } });
+    const existingProfile = await Profile.findOne({
+        where: { userId: user.id },
+    });
     if (!existingProfile) {
         await Profile.create({
             userId: user.id,
@@ -73,6 +75,8 @@ export const runBootstrapSeed = async () => {
             specialization: "Psychotherapy",
             licenseNumber: "LIC-1001",
             bio: "Trauma-informed therapist",
+            firstName: "Jake",
+            lastName: "Owie",
         },
     });
 

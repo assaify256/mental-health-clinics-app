@@ -27,8 +27,10 @@ const getDashboardData = async () => {
     if (!token) {
         redirect("/sign-in");
     }
-    const response = await fetch(
-        "http://localhost:8080/api/v1/dashboard/admin/overview",
+
+    try {
+        const response = await fetch(
+        "http://localhost:8080/api/v1/dashboard/admin/home",
         {
             method: "GET",
             credentials: "include",
@@ -37,9 +39,13 @@ const getDashboardData = async () => {
                 Cookie: cookieStore.toString(),
             },
         },
-    );
+    )
     const dashboardData = await response.json();
     return dashboardData;
+    } catch (error) {
+        console.error(error)
+    }
+    
 };
 
 export default async function Page() {

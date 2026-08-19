@@ -12,14 +12,17 @@ import {
     resolveClientByUserId,
     resolveProfessionalByUserId,
 } from "../services/data-access.ts";
+import sequelize from "../libs/db-config.ts";
 
 const dashboardRoutes = express.Router();
 
 dashboardRoutes.get(
-    "/admin/overview",
+    "/admin/home",
     requireRole("admin"),
     asyncHandler(async (_req, res) => {
-        const appointments = (await Appointment.findAll()).map(mapAppointmentEntity);
+        const appointments = (await Appointment.findAll()).map(
+            mapAppointmentEntity,
+        );
         const clients = await Client.count();
         const professionals = await Professional.count();
         const payments = (await Payment.findAll()).map(mapPaymentEntity);
@@ -28,14 +31,24 @@ dashboardRoutes.get(
             .filter((payment) => payment.status === "completed")
             .reduce((sum, payment) => sum + payment.amount, 0);
 
+        const tableData = sequelize.query(
+            `SELECT a.scheduledStart, a.scheduledEnd , c.firstName, c.lastName, p.firstName, p.lastName
+FROM clients c, professionals p, appointments a
+WHERE c.ownerUserId = a.clientId and p.userId = a.professionalId`,
+        );
+
         sendData(res, {
             totalAppointments: appointments.length,
             totalClients: clients,
             totalProfessionals: professionals,
-            completedAppointments: appointments.filter((item) => item.status === "completed")
-                .length,
-            pendingAppointments: appointments.filter((item) => item.status === "pending").length,
+            completedAppointments: appointments.filter(
+                (item) => item.status === "completed",
+            ).length,
+            pendingAppointments: appointments.filter(
+                (item) => item.status === "pending",
+            ).length,
             totalRevenue,
+            tableData,
         });
     }),
 );
@@ -45,21 +58,35 @@ dashboardRoutes.get(
     requireRole("admin"),
     asyncHandler(async (req, res) => {
         const range = (req.query.range as string | undefined) ?? "month";
-        const appointments = (await Appointment.findAll()).map(mapAppointmentEntity);
+        const appointments = (await Appointment.findAll()).map(
+            mapAppointmentEntity,
+        );
         const payments = (await Payment.findAll()).map(mapPaymentEntity);
 
         sendData(res, {
             range,
             appointmentsByStatus: {
-                pending: appointments.filter((item) => item.status === "pending").length,
-                confirmed: appointments.filter((item) => item.status === "confirmed").length,
-                completed: appointments.filter((item) => item.status === "completed").length,
-                cancelled: appointments.filter((item) => item.status === "cancelled").length,
+                pending: appointments.filter(
+                    (item) => item.status === "pending",
+                ).length,
+                confirmed: appointments.filter(
+                    (item) => item.status === "confirmed",
+                ).length,
+                completed: appointments.filter(
+                    (item) => item.status === "completed",
+                ).length,
+                cancelled: appointments.filter(
+                    (item) => item.status === "cancelled",
+                ).length,
             },
             paymentsByStatus: {
-                pending: payments.filter((item) => item.status === "pending").length,
-                completed: payments.filter((item) => item.status === "completed").length,
-                failed: payments.filter((item) => item.status === "failed").length,
+                pending: payments.filter((item) => item.status === "pending")
+                    .length,
+                completed: payments.filter(
+                    (item) => item.status === "completed",
+                ).length,
+                failed: payments.filter((item) => item.status === "failed")
+                    .length,
             },
         });
     }),
@@ -80,14 +107,22 @@ dashboardRoutes.get(
             return;
         }
 
-        const appointments = (await Appointment.findAll()).map(mapAppointmentEntity);
-        const mine = appointments.filter((item) => item.professionalId === String(professional.id));
+        const appointments = (await Appointment.findAll()).map(
+            mapAppointmentEntity,
+        );
+        const mine = appointments.filter(
+            (item) => item.professionalId === String(professional.id),
+        );
         const now = new Date();
 
         sendData(res, {
             totalAppointments: mine.length,
-            upcomingAppointments: mine.filter((item) => new Date(item.scheduledDate) >= now).length,
-            completedAppointments: mine.filter((item) => item.status === "completed").length,
+            upcomingAppointments: mine.filter(
+                (item) => new Date(item.scheduledDate) >= now,
+            ).length,
+            completedAppointments: mine.filter(
+                (item) => item.status === "completed",
+            ).length,
             activeClients: new Set(mine.map((item) => item.clientId)).size,
         });
     }),
@@ -108,20 +143,31 @@ dashboardRoutes.get(
             return;
         }
 
-        const appointments = (await Appointment.findAll()).map(mapAppointmentEntity);
+        const appointments = (await Appointment.findAll()).map(
+            mapAppointmentEntity,
+        );
         const payments = (await Payment.findAll()).map(mapPaymentEntity);
 
-        const mineAppointments = appointments.filter((item) => item.clientId === String(client.id));
-        const minePayments = payments.filter((item) => item.clientId === String(client.id));
+        const mineAppointments = appointments.filter(
+            (item) => item.clientId === String(client.id),
+        );
+        const minePayments = payments.filter(
+            (item) => item.clientId === String(client.id),
+        );
         const now = new Date();
 
         sendData(res, {
             totalAppointments: mineAppointments.length,
-            upcomingAppointments: mineAppointments.filter((item) => new Date(item.scheduledDate) >= now)
-                .length,
-            completedAppointments: mineAppointments.filter((item) => item.status === "completed")
-                .length,
-            totalPayments: minePayments.reduce((sum, payment) => sum + payment.amount, 0),
+            upcomingAppointments: mineAppointments.filter(
+                (item) => new Date(item.scheduledDate) >= now,
+            ).length,
+            completedAppointments: mineAppointments.filter(
+                (item) => item.status === "completed",
+            ).length,
+            totalPayments: minePayments.reduce(
+                (sum, payment) => sum + payment.amount,
+                0,
+            ),
         });
     }),
 );
