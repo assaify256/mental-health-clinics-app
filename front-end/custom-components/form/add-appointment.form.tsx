@@ -40,19 +40,19 @@ export default function AddAppointmentAdmin() {
     const [isOpen, setIsOpen] = useState(false);
     const [date, setDate] = useState<Date>();
     const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        fetch("http://localhost:8080/api/v1/appointments/", {
-            method: "POST",
-            body: {}
-        })
-        setIsOpen(false)
-    }
+    // const handleSubmit = (e) => {
+    //     e.preventDefault()
+    //     fetch("http://localhost:8080/api/v1/appointments/", {
+    //         method: "POST",
+    //         body: {}
+    //     })
+    //     setIsOpen(false)
+    // }
     return (
         <>
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <form onSubmit={handleSubmit}>
-                    <DialogContent className="w-full">
+                <form>
+                    <DialogContent className="">
                         <DialogHeader>
                             <DialogTitle>Add Appointment</DialogTitle>
                             <DialogDescription>
