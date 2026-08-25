@@ -7,7 +7,9 @@ import { CalendarDay } from "react-day-picker";
 import { appointmentSchedule } from "@/data/appointment.admin";
 
 export default function CustomCalendar({
+    className,
     ...props
+
 }: ComponentPropsWithoutRef<typeof Calendar>) {
     const [date, setDate] = useState<Date | undefined>(new Date());
     return (
@@ -16,7 +18,7 @@ export default function CustomCalendar({
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-lg border flex-1"
+            className={`rounded-lg border flex-1 ${className}`}
             components={{
                 DayButton: ({ ...props }) => (
                     <CustomDayButton
