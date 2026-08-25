@@ -62,7 +62,7 @@ export default function RootLayout({
                                     priority
                                 />
                                 <p className="text-sm">
-                                    a Fullstack Portfolio by Assaifydeveloper
+                                    a Front-end Portfolio by Assaifydeveloper
                                 </p>
                             </div>
                         </SidebarHeader>

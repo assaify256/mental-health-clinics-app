@@ -12,6 +12,7 @@ import {
     CircleCheckBig,
     Users,
 } from "lucide-react";
+import { containerClass, mainDescClass, mainDivClass, mainTitleClass } from "@/styles/classNames.admin";
 
 const tableHeader = [
     { key: "client", name: "Client" },
@@ -22,10 +23,10 @@ const tableHeader = [
 
 export default async function Page() {
     return (
-        <div className="flex flex-col p-6">
-            <h1 className="text-3xl mx-2">Admin Dashboard</h1>
-            <p className="mx-2">Welcome back! Here's an overview of your clinic.</p>
-            <div className="flex flex-col md:flex-row flex-wrap">
+        <div className={mainDivClass}>
+            <h1 className={mainTitleClass}>Admin Dashboard</h1>
+            <p className={mainDescClass}>Welcome back! Here's an overview of your clinic.</p>
+            <div className={containerClass}>
                 <CustomCard
                     className="m-2 md:min-w-48 flex-1"
                     title="Total Appointment"
