@@ -36,7 +36,7 @@ const tabs = [
     {
         key: paymentStatus.failed,
         filter: "Failed",
-        name: "failed",
+        name: "Failed",
     },
 ];
 

@@ -8,13 +8,6 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { menuItem } from "@/data/menu-nav-item";
-import {
-    CalendarClock,
-    CalendarDays,
-    ChartColumn,
-    CreditCard,
-    House,
-} from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function CustomSidebarMenu({ role }: { role: "admin" | "professional" | "client" }) {
@@ -27,6 +20,7 @@ export default function CustomSidebarMenu({ role }: { role: "admin" | "professio
             credentials: "include"
         }).then((response) => router.push("/"))
     }
+    console.log(path)
     return (
         <SidebarMenu>
             {menuItem[role].map((item) => (
