@@ -43,13 +43,13 @@ export default function Page() {
                 />
             </div>
             <div className={containerClass}>
-                <Card className="m-2 flex-1">
+                <Card className="m-2 flex-1 shadow-2xl">
                     <CardTitle className="mx-4 text-xl font-semibold">Revenue Trend</CardTitle>
                     <CardContent>
                         <RevenueTrend />
                     </CardContent>
                 </Card>
-                <Card className="m-2 flex-1">
+                <Card className="m-2 flex-1 shadow-2xl">
                     <CardTitle className="mx-4 text-xl font-semibold">Appointment Status</CardTitle>
                     <CardContent>
                         <AppointmentStatus />
@@ -58,8 +58,8 @@ export default function Page() {
             </div>
             <div className={containerClass}>
                 <div className="flex flex-row flex-1">
-                    <Card className="m-2 flex-1">
-                        <CardTitle className="mx-4">
+                    <Card className="m-2 flex-1 shadow-2xl">
+                        <CardTitle className="mx-4 text-xl font-semibold">
                             Appointment Summary
                         </CardTitle>
                         <CardContent className="flex flex-col">
@@ -77,8 +77,8 @@ export default function Page() {
                             </span>
                         </CardContent>
                     </Card>
-                    <Card className="m-2 flex-1">
-                        <CardTitle className="mx-4">Revenue Summary</CardTitle>
+                    <Card className="m-2 flex-1 shadow-2xl">
+                        <CardTitle className="mx-4 text-xl font-semibold">Revenue Summary</CardTitle>
                         <CardContent className="flex flex-col">
                             <span className="my-2 flex flex-row justify-between">
                                 <h3>Total Revenue</h3>
