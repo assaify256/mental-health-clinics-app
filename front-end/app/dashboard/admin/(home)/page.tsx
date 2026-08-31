@@ -11,8 +11,15 @@ import {
     CircleCheckBig,
     Users,
 } from "lucide-react";
-import { containerClass, mainDescClass, mainDivClass, mainTitleClass } from "@/styles/classNames.admin";
+import {
+    containerClass,
+    mainDescClass,
+    mainDivClass,
+    mainTitleClass,
+} from "@/styles/classNames.admin";
 import AppointmentStatusOverview from "./appointment-status-overview.chart";
+import PageTemplate from "@/custom-components/page/template";
+import Stack from "@/custom-components/page/stack";
 
 const tableHeader = [
     { key: "client", name: "Client" },
@@ -23,10 +30,11 @@ const tableHeader = [
 
 export default async function Page() {
     return (
-        <div className={mainDivClass}>
-            <h1 className={mainTitleClass}>Admin Dashboard</h1>
-            <p className={mainDescClass}>Welcome back! Here's an overview of your clinic.</p>
-            <div className={containerClass}>
+        <PageTemplate
+            title="Admin Dashboard"
+            description="Welcome back! Here's an overview of your clinic."
+        >
+            <Stack>
                 <CustomCard
                     className="m-2 md:min-w-48 flex-1"
                     title="Total Appointment"
@@ -60,16 +68,16 @@ export default async function Page() {
                         <ChartNoAxesCombined className="size-8  text-gray-800" />
                     }
                 />
-            </div>
-            <div className="flex flex-col md:flex-row">
+            </Stack>
+            <Stack>
                 <Card className={`m-2 md:flex-2 shadow-2xl`}>
                     <CardContent>
-                        <AppointmentStatusOverview/>
+                        <AppointmentStatusOverview />
                     </CardContent>
                 </Card>
                 <CustomQuickList className="flex-1 m-2" />
-            </div>
-            <div className="flex flex-col md:flex-row">
+            </Stack>
+            <Stack>
                 <Card className="flex-1 m-2">
                     <CardContent>
                         <CustomTable
@@ -78,7 +86,7 @@ export default async function Page() {
                         />
                     </CardContent>
                 </Card>
-            </div>
-        </div>
+            </Stack>
+        </PageTemplate>
     );
 }
