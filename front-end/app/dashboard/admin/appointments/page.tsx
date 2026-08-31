@@ -3,7 +3,15 @@ import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { appointmentTable, appointmentStatus } from "@/data/table.admin";
 import { Pencil, Trash2 } from "lucide-react";
-import { containerClass, mainDescClass, mainDivClass, mainTitleClass } from "@/styles/classNames.admin";
+import {
+    containerClass,
+    mainDescClass,
+    mainDivClass,
+    mainTitleClass,
+} from "@/styles/classNames.admin";
+import AddAppointmentAdmin from "@/custom-components/form/add-appointment.form";
+import PageTemplate from "@/custom-components/page/template";
+import Stack from "@/custom-components/page/stack";
 
 const tableHeader = [
     { key: "client", name: "Client" },
@@ -43,10 +51,11 @@ const tabs = [
 
 export default function Page() {
     return (
-        <div className={mainDivClass}>
-            <h1 className={mainTitleClass}>Manage Appointment</h1>
-            <p className={mainDescClass}>View and manage all clinic appointments</p>
-            <div className={containerClass}>
+        <PageTemplate
+            title="Manage Appointment"
+            description="View and manage all clinic appointments"
+        >
+            <Stack>
                 <Tabs defaultValue="all" className="m-2 flex-1">
                     <div className="flex flex-col max-w-full md:flex-row justify-between">
                         <TabsList>
@@ -56,7 +65,7 @@ export default function Page() {
                                 </TabsTrigger>
                             ))}
                         </TabsList>
-                        {/* <AddAppointmentAdmin/> */}
+                        <AddAppointmentAdmin />
                     </div>
                     {tabs.map((tab) => (
                         <TabsContent
@@ -170,7 +179,7 @@ export default function Page() {
                         </TabsContent>
                     ))}
                 </Tabs>
-            </div>
-        </div>
+            </Stack>
+        </PageTemplate>
     );
 }
