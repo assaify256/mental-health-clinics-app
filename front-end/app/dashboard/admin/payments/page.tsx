@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CustomCard from "@/custom-components/cards/custom-card";
+import CustomCard from "@/custom-components-old/admin/custom-card.admin";
 import CustomTable, { badgify } from "@/custom-components/table/table.main";
 import {
     appointmentTable,
