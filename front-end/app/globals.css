@@ -120,7 +120,7 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-<<<<<<< HEAD
+
   }
   body {
     @apply bg-background text-foreground;
@@ -135,13 +135,4 @@ body {
   padding: 0;
   box-sizing: border-box;
 }
-=======
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
-}
->>>>>>> 247ce7b085ad8271f53ade34154f8c66b005cdbf
+
