@@ -4,7 +4,7 @@ import CustomCard from "@/custom-components-old/admin/custom-card.admin";
 import CustomChart from "@/custom-components-old/admin/home/custom-chart.admin";
 import CustomQuickList from "@/custom-components-old/admin/home/custom-quick-action.admin";
 import CustomTable, { badgify } from "@/custom-components/table/table.main";
-import { homeTable } from "@/data/table.admin";
+import { homeTable } from "@/dummy-data/table.admin";
 
 import {
     Calendar,
@@ -13,12 +13,7 @@ import {
     Users,
 } from "lucide-react";
 
-const tableHeader = [
-    { key: "client", name: "Client" },
-    { key: "professional", name: "Professional" },
-    { key: "dateTime", name: "Date Time" },
-    { key: "status", name: "Status" },
-];
+
 
 export default function Page() {
     return (
@@ -68,7 +63,15 @@ export default function Page() {
             <div className="flex flex-row">
                 <Card className="mt-4 flex-1">
                     <CardContent>
-                        <CustomTable headers={tableHeader} data={badgify(homeTable)} />
+                        <CustomTable
+                            headers={[
+                                { key: "client", name: "Client" },
+                                { key: "professional", name: "Professional" },
+                                { key: "date", name: "Date" },
+                                { key: "status", name: "Status" },
+                            ]}
+                            data={badgify(homeTable)}
+                        />
                     </CardContent>
                 </Card>
             </div>

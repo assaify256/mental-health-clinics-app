@@ -1,17 +1,11 @@
 
-
 export enum paymentStatus {
-    pending = "pending",
-    completed = "completed",
-    failed = "failed",
-}
-
-export enum appointmentStatus {
     pending = "pending",
     confirmed = "confirmed",
     completed = "completed",
     canceled = "canceled",
 }
+
 export interface HomeTable {
     id: number | string;
     client: string;
@@ -42,7 +36,7 @@ export interface AppointmentTable {
     client: string;
     professional: string;
     dateTime: string;
-    status: appointmentStatus;
+    status: paymentStatus;
     notes: string;
 }
 
@@ -52,7 +46,7 @@ export const appointmentTable = [
         client: "Alice Johnson",
         professional: "John Smith",
         dateTime: "06-06-2026 10:00",
-        status: appointmentStatus.pending,
+        status: paymentStatus.pending,
         notes: "Hi",
     },
     {
@@ -60,7 +54,7 @@ export const appointmentTable = [
         client: "Alice Johnson",
         professional: "Sarah Johnson",
         dateTime: "06-06-2026 10:00",
-        status: appointmentStatus.confirmed,
+        status: paymentStatus.confirmed,
         notes: "Hello",
     },
     {
@@ -68,7 +62,7 @@ export const appointmentTable = [
         client: "Bob Smith",
         professional: "Badu Wood",
         dateTime: "06-06-2026 10:00",
-        status: appointmentStatus.canceled,
+        status: paymentStatus.canceled,
         notes: "Hello",
     },
 ];
@@ -86,15 +80,15 @@ export const paymentTable = [
         id: 1,
         client: "Alice Johnson",
         dateTime: "06-06-2026 10:00",
+        status: "Pending",
         amount: 300,
-        status: paymentStatus.completed,
     },
     {
         id: 2,
         client: "Alice Johnson",
         dateTime: "06-06-2026 10:00",
+        status: "Pending",
         amount: 200,
-        status: paymentStatus.pending,
     },
 ];
 

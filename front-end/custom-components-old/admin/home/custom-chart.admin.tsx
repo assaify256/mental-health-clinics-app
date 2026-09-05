@@ -2,7 +2,7 @@
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Bar, BarChart } from "recharts";
 import { Card, CardContent } from "../../../components/ui/card";
-import { chartConfig, chartData } from "@/data/chart.admin";
+import { chartConfig, chartData } from "@/dummy-data/chart.admin";
 
 export default function CustomChart({...props}) {
     return (

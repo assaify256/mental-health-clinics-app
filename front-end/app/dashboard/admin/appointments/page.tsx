@@ -1,7 +1,7 @@
 import CustomTable, { badgify } from "@/custom-components/table/table.main";
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { appointmentTable, appointmentStatus } from "@/data/table.admin";
+import { appointmentTable, paymentStatus } from "@/dummy-data/table.admin";
 import { Badge } from "@/components/ui/badge";
 
 const tableHeader = [
@@ -12,7 +12,6 @@ const tableHeader = [
     { key: "notes", name: "Notes" },
 ];
 
-
 const tabs = [
     {
         key: "all",
@@ -20,22 +19,22 @@ const tabs = [
         name: "All",
     },
     {
-        key: appointmentStatus.pending,
+        key: paymentStatus.pending,
         filter: "Pending",
         name: "Pending",
     },
     {
-        key: appointmentStatus.confirmed,
+        key: paymentStatus.confirmed,
         filter: "Confirmed",
         name: "Confirmed",
     },
     {
-        key: appointmentStatus.completed,
+        key: paymentStatus.completed,
         filter: "Completed",
         name: "Completed",
     },
     {
-        key: appointmentStatus.canceled,
+        key: paymentStatus.canceled,
         filter: "Canceled",
         name: "Canceled",
     },
@@ -79,6 +78,43 @@ export default function Page() {
                             </Card>
                         </TabsContent>
                     ))}
+
+                    {/* <TabsContent className="mt-6" value="pending">
+                        <CustomTable
+                            className="shadow-2xl"
+                            data={appointmentTable.filter((data) => {
+                                return data.status === "Pending";
+                            })}
+                            headers={tableHeader}
+                        />
+                    </TabsContent>
+                    <TabsContent className="mt-6" value="confirmed">
+                        <CustomTable
+                            className="shadow-2xl"
+                            data={appointmentTable.filter((data) => {
+                                return data.status === "Confirmed";
+                            })}
+                            headers={tableHeader}
+                        />
+                    </TabsContent>
+                    <TabsContent className="mt-6" value="completed">
+                        <CustomTable
+                            className="shadow-2xl"
+                            data={appointmentTable.filter((data) => {
+                                return data.status === "Completed";
+                            })}
+                            headers={tableHeader}
+                        />
+                    </TabsContent>
+                    <TabsContent className="mt-6" value="canceled">
+                        <CustomTable
+                            className="shadow-2xl"
+                            data={appointmentTable.filter((data) => {
+                                return data.status === "Cancelled";
+                            })}
+                            headers={tableHeader}
+                        />
+                    </TabsContent> */}
                 </Tabs>
             </div>
         </div>
