@@ -3,10 +3,6 @@
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import {
     Cell,
-    DefaultLegendContent,
-    DefaultLegendContentProps,
-    Legend,
-    LegendType,
     Line,
     LineChart,
     Pie,
@@ -42,31 +38,15 @@ const chartData = [
     },
 ];
 
-const MyCustomPie = (props: PieSectorShapeProps) => (
-    <Sector {...props} fill={colors[props.index % colors.length]} />
-);
+const MyCustomPie = (props: PieSectorShapeProps) => <Sector {...props} fill={colors[props.index % colors.length]} />;
 
 export default function AppointmentStatus() {
     return (
         <ChartContainer config={chartConfig}>
             <PieChart data={chartData}>
-                <Pie dataKey={"value"} shape={MyCustomPie} label={true}></Pie>
-                <Legend
-                    content={({
-                        payload,
-                        ...rest
-                    }: DefaultLegendContentProps) => {
-                        const newPayload = payload?.map((item, index) => {
-                            return { ...item, color: colors[index] };
-                        });
-                        return (
-                            <DefaultLegendContent
-                                payload={newPayload}
-                                {...rest}
-                            />
-                        );
-                    }}
-                ></Legend>
+                <Pie dataKey={"value"} shape={MyCustomPie}>
+
+                </Pie>
                 <Tooltip />
             </PieChart>
         </ChartContainer>
