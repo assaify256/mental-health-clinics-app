@@ -172,7 +172,7 @@ appointmentsRoutes.post(
                 throw new HttpError(404, "CLIENT_NOT_FOUND", "Client profile not found");
             }
 
-            // clientId = client.id;
+            clientId = client.id;
         } else if (body.clientId) {
             clientId = parseIdParam(body.clientId, "clientId");
         }
@@ -187,11 +187,9 @@ appointmentsRoutes.post(
             scheduledStart: buildScheduledStart(body.scheduledDate, body.scheduledTime),
             status: "pending",
             notes: body.notes ?? null,
-        })
-
+        });
 
         sendData(res, mapAppointmentEntity(appointment), 201);
-        
     }),
 );
 

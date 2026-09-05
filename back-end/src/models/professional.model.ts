@@ -4,8 +4,6 @@ import sequelize from "../libs/db-config.ts";
 interface ProfessionalAttributes {
     id: number;
     userId: number;
-    firstName: string;
-    lastName: string;
     licenseNumber: string | null;
     specialization: string | null;
     bio: string | null;
@@ -24,8 +22,6 @@ class Professional
 {
     declare public id: number;
     declare public userId: number;
-    declare public firstName: string;
-    declare public lastName: string;
     declare public licenseNumber: string | null;
     declare public specialization: string | null;
     declare public bio: string | null;
@@ -48,16 +44,6 @@ Professional.init(
                 model: "users",
                 key: "id",
             },
-        },
-        firstName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: false,
-        },
-        lastName: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: false,
         },
         licenseNumber: {
             type: DataTypes.STRING,

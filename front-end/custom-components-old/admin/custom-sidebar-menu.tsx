@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
     SidebarFooter,
     SidebarMenu,
@@ -15,18 +14,11 @@ import {
     CreditCard,
     House,
 } from "lucide-react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function CustomSidebarMenu({ role }: { role: "admin" | "professional" | "client" }) {
     const path = usePathname();
     const isHomePath = path === `/dashboard/${role}`;
-    const router = useRouter()
-    const handleLogout = () => {
-        fetch("http://localhost:8080/api/v1/auth/logout", {
-            method: "POST",
-            credentials: "include"
-        }).then((response) => router.push("/"))
-    }
     return (
         <SidebarMenu>
             {menuItem[role].map((item) => (
@@ -48,9 +40,7 @@ export default function CustomSidebarMenu({ role }: { role: "admin" | "professio
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             ))}
-            <SidebarFooter>
-                <Button variant="destructive" onClick={handleLogout}>Log Out</Button>
-            </SidebarFooter>
+            <SidebarFooter>A</SidebarFooter>
         </SidebarMenu>
     );
 }

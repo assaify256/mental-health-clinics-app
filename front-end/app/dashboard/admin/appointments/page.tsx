@@ -2,9 +2,7 @@ import CustomTable, { badgify } from "@/custom-components/table/table.main";
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { appointmentTable, appointmentStatus } from "@/data/table.admin";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import AddAppointmentAdmin from "@/custom-components/form/add-appointment.form";
+import { Badge } from "@/components/ui/badge";
 
 const tableHeader = [
     { key: "client", name: "Client" },
@@ -13,6 +11,7 @@ const tableHeader = [
     { key: "status", name: "Status" },
     { key: "notes", name: "Notes" },
 ];
+
 
 const tabs = [
     {
@@ -44,22 +43,20 @@ const tabs = [
 
 
 export default function Page() {
+    console.log(appointmentTable);
     return (
         <div className="flex flex-col p-8">
             <h1 className="text-3xl">Manage Appointment</h1>
             <p>View and manage all clinic appointments</p>
             <div className="flex flex-row mt-8">
                 <Tabs defaultValue="all" className="flex-1">
-                    <div className="flex flex-row justify-between">
-                        <TabsList>
-                            {tabs.map((tab) => (
-                                <TabsTrigger key={tab.key} value={tab.key}>
-                                    {tab.name}
-                                </TabsTrigger>
-                            ))}
-                        </TabsList>
-                        <AddAppointmentAdmin/>
-                    </div>
+                    <TabsList>
+                        {tabs.map((tab) => (
+                            <TabsTrigger key={tab.key} value={tab.key}>
+                                {tab.name}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
                     {tabs.map((tab) => (
                         <TabsContent
                             key={tab.key}
