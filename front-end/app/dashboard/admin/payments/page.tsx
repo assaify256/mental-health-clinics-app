@@ -49,19 +49,19 @@ export default function Page() {
                 <CustomCard
                     className="m-2 md:min-w-48 flex-1"
                     title="Total Revenue"
-                    icon={<CreditCard className="text-blue-500"/>}
+                    icon={<CreditCard />}
                 />
                 <CustomCard
                     className="m-2 md:min-w-48 flex-1"
                     title="Pending Payments"
                     preNumber="$"
-                    icon={<CreditCard className="text-orange-500"/>}
+                    icon={<CreditCard />}
                 />
                 <CustomCard
                     className="m-2 md:min-w-48 flex-1"
                     title="Total Transactions"
                     preNumber="$"
-                    icon={<CreditCard className="text-green-500"/>}
+                    icon={<CreditCard />}
                 />
             </div>
             <div className="flex flex-row">
