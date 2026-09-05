@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import {
     Activity,
     ArrowRight,
@@ -546,3 +547,18 @@ function StatCard({ icon, label, value }: StatCardProps) {
 }
 
 export default App;
+=======
+// Components
+import Image from "next/image";
+import Link from "next/link";
+
+export default function Home() {
+    return (
+        <main>
+            <p>Main Page</p>
+            <Link href="/sign-up">Sign Up</Link>
+            <Link href="/sign-in">Sign In</Link>
+        </main>
+    );
+}
+>>>>>>> 247ce7b085ad8271f53ade34154f8c66b005cdbf
