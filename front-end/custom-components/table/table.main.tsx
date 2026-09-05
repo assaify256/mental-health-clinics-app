@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import React from "react";
 
 interface Header {
     name: string;
@@ -18,23 +19,10 @@ interface CustomTable {
     data: Record<string, string | number | null | React.ReactNode>[];
 }
 
-export const badgify = (
-    data: Record<string, string | number | null | React.ReactNode>[],
-) => {
-    let obj;
-    let arr;
-    arr = structuredClone(data)
-    for (obj of arr) {
-        obj.status = <Badge>{obj.status}</Badge>;
+export default function CustomTable({ headers, data, ...props }: CustomTable) {
+    for (let d of data) {
+        d.status = <Badge>{d.status}</Badge>;
     }
-    return arr;
-};
-
-export default function CustomTable({
-    headers = [],
-    data,
-    ...props
-}: CustomTable) {
     return (
         <Table {...props}>
             <TableHeader>
@@ -58,3 +46,4 @@ export default function CustomTable({
         </Table>
     );
 }
+

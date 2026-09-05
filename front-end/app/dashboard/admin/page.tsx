@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import CustomCard from "@/custom-components-old/admin/custom-card.admin";
 import CustomChart from "@/custom-components-old/admin/home/custom-chart.admin";
 import CustomQuickList from "@/custom-components-old/admin/home/custom-quick-action.admin";
-import CustomTable, { badgify } from "@/custom-components/table/table.main";
+import CustomTable from "@/custom-components/table/table.main";
 import { homeTable } from "@/dummy-data/table.admin";
 
 import {
@@ -12,8 +12,6 @@ import {
     CircleCheckBig,
     Users,
 } from "lucide-react";
-
-
 
 export default function Page() {
     return (
@@ -70,7 +68,7 @@ export default function Page() {
                                 { key: "date", name: "Date" },
                                 { key: "status", name: "Status" },
                             ]}
-                            data={badgify(homeTable)}
+                            data={homeTable}
                         />
                     </CardContent>
                 </Card>
