@@ -1,16 +1,11 @@
-import {
-    containerClass,
-    mainDescClass,
-    mainDivClass,
-    mainTitleClass,
-} from "@/styles/classNames.admin";
+
 
 export default function Page() {
     return (
-        <div className={mainDivClass}>
-            <h1 className={mainTitleClass}>Statistics & Analytics</h1>
-            <p className={mainDescClass}>Track and manage clinic payments</p>
-            <div className={containerClass}></div>
+        <div className="flex flex-col p-8">
+            <h1 className="text-3xl">Payment Management</h1>
+            <p>Track and manage clinic payments</p>
+            <div className="flex flex-row mt-8"></div>
         </div>
     );
 }

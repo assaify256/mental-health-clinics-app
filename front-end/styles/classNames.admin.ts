@@ -1,6 +1,0 @@
-import { ComponentProps } from "react";
-
-export const mainDivClass: ComponentProps<'div'>['className'] = "flex flex-col p-6";
-export const mainTitleClass: ComponentProps<'h1'>['className'] = "text-3xl mx-2";
-export const mainDescClass: ComponentProps<'p'>['className'] = "mx-2 mb-4";
-export const containerClass: ComponentProps<'div'>['className'] = "flex flex-col md:flex-row flex-wrap";
