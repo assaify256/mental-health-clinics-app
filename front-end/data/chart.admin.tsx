@@ -1,17 +1,14 @@
 import { ChartConfig } from "@/components/ui/chart";
 
 export const chartConfig = {
-    completed: {
-        label: "Completed",
+    desktop: {
+        label: "Desktop",
         color: "#2563eb",
     },
-    pending: {
-        label: "Pending",
+    mobile: {
+        label: "Mobile",
         color: "#60a5fa",
     },
 } satisfies ChartConfig;
 
-export const chartData = [
-    { category: "pending", value: 400 },
-    { category: "completed", value: 300 },
-];
+export const chartData = [{ completed: 186, pending: 80 }];
