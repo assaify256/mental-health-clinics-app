@@ -50,7 +50,29 @@ export default function SignupForm({ signInLink, ...props }: Props) {
             setError("Password and Confirmed password must be the same");
             return;
         }
-        redirect("/dashboard/admin")
+        fetch("http://localhost:8080/api/v1/auth/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ email, password, firstName, lastName }),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return;
+                }
+                return response.json();
+            })
+            .then((resObj) => {
+                console.log(resObj);
+                if (resObj) {
+                    const role = resObj.data.user.role;
+                    console.log(role);
+                    redirect(`/dashboard/${role}`);
+                }
+            })
+            .catch((error) => console.error(error));
     };
     return (
         <Card {...props}>
