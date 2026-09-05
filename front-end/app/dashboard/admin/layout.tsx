@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import Logo from "@/public/logo.png";
-import CustomSidebarMenu from "@/custom-components/menu/custom-sidebar-menu";
+import CustomSidebarMenu from "@/custom-components-old/admin/custom-sidebar-menu";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
