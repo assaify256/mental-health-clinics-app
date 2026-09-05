@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import CustomCard from "@/custom-components/cards/custom-card";
 import Stack from "@/custom-components/page/stack";
@@ -10,7 +11,15 @@ import {
     mainDivClass,
     mainTitleClass,
 } from "@/styles/classNames.admin";
-import { CalendarCheck, CalendarClock, NotepadText, Pill } from "lucide-react";
+import {
+    Calendar,
+    CalendarCheck,
+    CalendarClock,
+    ClipboardCheck,
+    Notebook,
+    NotepadText,
+    Pill,
+} from "lucide-react";
 
 const tableHeaders = [
     {
@@ -68,6 +77,32 @@ export default function Page() {
                     icon={<NotepadText />}
                     number={0}
                 />
+            </Stack>
+            <Stack>
+                <Card className="shadow-2xl flex-1 m-2">
+                    <CardContent className="flex flex-col">
+                        <h2 className="text-lg font-semibold">Quick Actions</h2>
+                        <Button className="m-0.5 justify-baseline">
+                            <Calendar />
+                            Book Appointments
+                        </Button>
+                        <Button className="m-0.5 justify-baseline">
+                            <Notebook />
+                            Write Notes
+                        </Button>
+                        <Button className="m-0.5 justify-baseline">
+                            <ClipboardCheck />
+                            View Results
+                        </Button>
+                    </CardContent>
+                </Card>
+                <Card className="shadow-2xl flex-2 m-2">
+                    <CardContent>
+                        <h2 className="text-lg font-semibold">
+                            Upcoming Appointments
+                        </h2>
+                    </CardContent>
+                </Card>
             </Stack>
             <Stack>
                 <Card className={`shadow-2xl flex-1 m-2`}>

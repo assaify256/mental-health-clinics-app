@@ -1,5 +1,17 @@
 import { containerClass } from "@/styles/classNames.admin";
+import { ComponentPropsWithoutRef } from "react";
 
-export default function Stack({ children }: { children: React.ReactNode | undefined }) {
-    return <div className={containerClass}>{children}</div>;
+interface StackProps extends ComponentPropsWithoutRef<'div'>{
+    children? : React.ReactNode;
+}
+
+export default function Stack({
+    children,
+    ...props
+}: StackProps) {
+    return (
+        <div className={containerClass} {...props}>
+            {children}
+        </div>
+    );
 }
