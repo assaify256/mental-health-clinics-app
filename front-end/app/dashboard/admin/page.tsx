@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 
-import CustomCard from "@/custom-components/cards/custom-card";
+import CustomCard from "@/custom-components-old/admin/custom-card.admin";
 import CustomChart from "@/custom-components-old/admin/home/custom-chart.admin";
 import CustomQuickList from "@/custom-components-old/admin/home/custom-quick-action.admin";
 import CustomTable, { badgify } from "@/custom-components/table/table.main";
@@ -12,6 +12,8 @@ import {
     CircleCheckBig,
     Users,
 } from "lucide-react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const tableHeader = [
     { key: "client", name: "Client" },
@@ -21,37 +23,35 @@ const tableHeader = [
 ];
 
 export default async function Page() {
+
     return (
-        <div className="flex flex-col p-6">
-            <h1 className="text-3xl mx-2">Admin Dashboard</h1>
-            <p className="mx-2">Welcome back! Here's an overview of your clinic.</p>
-            <div className="flex flex-col md:flex-row flex-wrap">
+        <div className="flex flex-col p-8">
+            <h1 className="text-3xl">Admin Dashboard</h1>
+            <p>Welcome back! Here's an overview of your clinic.</p>
+            <div className="flex flex-row">
                 <CustomCard
-                    className="m-2 md:min-w-48 flex-1"
+                    className="ml-0"
                     title="Total Appointment"
                     number={0}
                     icon={<Calendar className="size-8  text-blue-500" />}
                 />
                 <CustomCard
-                    className="m-2 md:min-w-48 flex-1"
                     title="Total Clients"
                     number={0}
                     icon={<Users className="size-8  text-purple-500" />}
                 />
                 <CustomCard
-                    className="m-2 md:min-w-48 flex-1"
                     title="Total Professionals"
                     number={0}
                     icon={<Users className="size-8  text-sky-500" />}
                 />
                 <CustomCard
-                    className="m-2 md:min-w-48 flex-1"
                     title="Completed"
                     number={0}
                     icon={<CircleCheckBig className="size-8  text-green-500" />}
                 />
                 <CustomCard
-                    className="m-2 md:min-w-48 flex-1"
+                    className="mr-0"
                     title="Total Revenue"
                     preNumber="$"
                     number={0}
@@ -60,16 +60,16 @@ export default async function Page() {
                     }
                 />
             </div>
-            <div className="flex flex-col md:flex-row">
-                <Card className={`m-2 md:flex-2 shadow-2xl`}>
+            <div className="flex flex-row">
+                <Card className={`flex-2 mr-4 shadow-2xl`}>
                     <CardContent>
                         <CustomChart />
                     </CardContent>
                 </Card>
-                <CustomQuickList className="flex-1 m-2" />
+                <CustomQuickList className="flex-1" />
             </div>
-            <div className="flex flex-col md:flex-row">
-                <Card className="flex-1 m-2">
+            <div className="flex flex-row">
+                <Card className="mt-4 flex-1">
                     <CardContent>
                         <CustomTable
                             headers={tableHeader}

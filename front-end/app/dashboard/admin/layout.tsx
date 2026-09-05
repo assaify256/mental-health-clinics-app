@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
-import "@/app/globals.css";
+import "@/app/globals.css"
 import { cn } from "@/lib/utils";
 import {
     Sidebar,
@@ -53,7 +53,6 @@ export default function RootLayout({
             <body className="min-h-full flex flex-col">
                 <SidebarProvider>
                     <Sidebar className="shadow-2xl ">
-                        
                         <SidebarHeader className="flex flex-col bg-white">
                             <div className="flex flex-row items-center">
                                 <Image
@@ -71,19 +70,16 @@ export default function RootLayout({
                         <SidebarContent className="bg-white">
                             <SidebarGroup className="p-6">
                                 <p className="text-sm">Hi, Username</p>
-                                <p className="text-xs text-gray-600">
-                                    Admin Role
-                                </p>
+                                <p className="text-xs text-gray-600">Admin Role</p>
                             </SidebarGroup>
                             <hr />
                             <SidebarGroup>
-                                <CustomSidebarMenu role="admin" />
+                                <CustomSidebarMenu role="admin"/>
                             </SidebarGroup>
                         </SidebarContent>
                         <SidebarFooter />
                     </Sidebar>
                     <SidebarInset className="bg-gray-200">
-                        <SidebarTrigger className="fixed"/>
                         {children}
                     </SidebarInset>
                 </SidebarProvider>
