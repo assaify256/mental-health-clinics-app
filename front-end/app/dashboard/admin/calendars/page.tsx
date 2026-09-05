@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import CustomCalendar from "@/custom-components-old/admin/calendar/custom-calendar.admin";
-import CustomDayButton from "@/custom-components-old/admin/calendar/custom-day-button";
+import CustomCalendar from "@/custom-components/admin/calendar/custom-calendar.admin";
+import CustomDayButton from "@/custom-components/admin/calendar/custom-day-button";
 import styles from "react-day-picker/style.module.css";
 
 export default function Page() {

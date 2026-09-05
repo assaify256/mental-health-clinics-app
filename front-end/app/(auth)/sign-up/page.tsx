@@ -2,7 +2,7 @@
 
 // Components
 import Image from "next/image";
-import { SignupForm } from "@/custom-components-old/general/signup-form";
+import { SignupForm } from "@/custom-components/general/signup-form";
 
 // Assets
 import Logo from "@/public/logo.png";
