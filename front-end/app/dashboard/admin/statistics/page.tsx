@@ -14,56 +14,49 @@ import {
 } from "lucide-react";
 import RevenueTrend from "./revenue-trend.chart";
 import AppointmentStatus from "./appointment-status.chart";
-import PageTemplate from "@/custom-components/page/template";
-import Stack from "@/custom-components/page/stack";
 
 export default function Page() {
     return (
-        <PageTemplate
-            title="Statistics & Analytics"
-            description="Track and manage clinic payments"
-        >
-            <Stack>
+        <div className={mainDivClass}>
+            <h1 className={mainTitleClass}>Statistics & Analytics</h1>
+            <p className={mainDescClass}>Track and manage clinic payments</p>
+            <div className={containerClass}>
                 <CustomCard
                     title="Total Appointments"
-                    className="m-2 md:min-w-48 flex-1 shadow-2xl"
+                    className="m-2 md:min-w-48 flex-1"
                     icon={<CalendarCheck />}
                 />
                 <CustomCard
                     title="Active Clients"
-                    className="m-2 md:min-w-48 flex-1 shadow-2xl"
+                    className="m-2 md:min-w-48 flex-1"
                     icon={<Users />}
                 />
                 <CustomCard
                     title="Total Professionals"
-                    className="m-2 md:min-w-48 flex-1 shadow-2xl"
+                    className="m-2 md:min-w-48 flex-1"
                     icon={<BriefcaseMedical />}
                 />
                 <CustomCard
                     title="Total Revenue"
-                    className="m-2 md:min-w-48 flex-1 shadow-2xl"
+                    className="m-2 md:min-w-48 flex-1"
                     icon={<CreditCard />}
                 />
-            </Stack>
-            <Stack>
+            </div>
+            <div className={containerClass}>
                 <Card className="m-2 flex-1 shadow-2xl">
-                    <CardTitle className="mx-4 text-xl font-semibold">
-                        Revenue Trend
-                    </CardTitle>
+                    <CardTitle className="mx-4 text-xl font-semibold">Revenue Trend</CardTitle>
                     <CardContent>
                         <RevenueTrend />
                     </CardContent>
                 </Card>
                 <Card className="m-2 flex-1 shadow-2xl">
-                    <CardTitle className="mx-4 text-xl font-semibold">
-                        Appointment Status
-                    </CardTitle>
+                    <CardTitle className="mx-4 text-xl font-semibold">Appointment Status</CardTitle>
                     <CardContent>
                         <AppointmentStatus />
                     </CardContent>
                 </Card>
-            </Stack>
-            <Stack>
+            </div>
+            <div className={containerClass}>
                 <div className="flex flex-row flex-1">
                     <Card className="m-2 flex-1 shadow-2xl">
                         <CardTitle className="mx-4 text-xl font-semibold">
@@ -85,9 +78,7 @@ export default function Page() {
                         </CardContent>
                     </Card>
                     <Card className="m-2 flex-1 shadow-2xl">
-                        <CardTitle className="mx-4 text-xl font-semibold">
-                            Revenue Summary
-                        </CardTitle>
+                        <CardTitle className="mx-4 text-xl font-semibold">Revenue Summary</CardTitle>
                         <CardContent className="flex flex-col">
                             <span className="my-2 flex flex-row justify-between">
                                 <h3>Total Revenue</h3>
@@ -109,7 +100,7 @@ export default function Page() {
                         </CardContent>
                     </Card>
                 </div>
-            </Stack>
-        </PageTemplate>
+            </div>
+        </div>
     );
 }
