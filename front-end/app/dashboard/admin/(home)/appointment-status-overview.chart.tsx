@@ -1,6 +1,5 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import {
     ChartContainer,
     ChartTooltip,
@@ -15,23 +14,19 @@ export default function AppointmentStatusOverview({
     ...props
 }: ContainerProps) {
     return (
-        <Card {...props}>
-            <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <BarChart data={chartData} className="h-3/4">
-                        <Bar dataKey="value" fill="var(--chart-3)" radius={4} />
-                        <XAxis
-                            tickLine={false}
-                            axisLine={false}
-                            type="category"
-                            dataKey="category"
-                        />
-                        <YAxis />
-                        <CartesianGrid />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
-        </Card>
+        <ChartContainer config={chartConfig} {...props}>
+            <BarChart data={chartData}>
+                <Bar dataKey="value" fill="var(--chart-3)" radius={4} />
+                <XAxis
+                    tickLine={false}
+                    axisLine={false}
+                    type="category"
+                    dataKey="category"
+                />
+                <YAxis />
+                <CartesianGrid />
+                <ChartTooltip content={<ChartTooltipContent />} />
+            </BarChart>
+        </ChartContainer>
     );
 }
