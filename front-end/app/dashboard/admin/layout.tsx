@@ -50,9 +50,10 @@ export default function RootLayout({
                 inter.variable,
             )}
         >
-            <body className="min-h-full max-w-full overflow-x-hidden flex flex-col">
+            <body className="min-h-full flex flex-col">
                 <SidebarProvider>
                     <Sidebar className="shadow-2xl ">
+                        
                         <SidebarHeader className="flex flex-col bg-white">
                             <div className="flex flex-row items-center">
                                 <Image
@@ -82,7 +83,7 @@ export default function RootLayout({
                         <SidebarFooter />
                     </Sidebar>
                     <SidebarInset className="bg-gray-200">
-                        <SidebarTrigger className="fixed" />
+                        <SidebarTrigger className="fixed"/>
                         {children}
                     </SidebarInset>
                 </SidebarProvider>
