@@ -1,10 +1,4 @@
-
-export enum paymentStatus {
-    pending = "pending",
-    confirmed = "confirmed",
-    completed = "completed",
-    canceled = "canceled",
-}
+import { Badge } from "@/components/ui/badge";
 
 export interface HomeTable {
     id: number | string;
@@ -36,33 +30,33 @@ export interface AppointmentTable {
     client: string;
     professional: string;
     dateTime: string;
-    status: paymentStatus;
+    status: "Pending" | "Completed" | "Cancelled" | "Confirmed";
     notes: string;
 }
 
-export const appointmentTable = [
+export const appointmentTable: AppointmentTable[] = [
     {
         id: 1,
         client: "Alice Johnson",
-        professional: "John Smith",
+        professional: "alice@example.com",
         dateTime: "06-06-2026 10:00",
-        status: paymentStatus.pending,
+        status: "Pending",
         notes: "Hi",
     },
     {
         id: 2,
         client: "Alice Johnson",
-        professional: "Sarah Johnson",
+        professional: "alice@example.com",
         dateTime: "06-06-2026 10:00",
-        status: paymentStatus.confirmed,
+        status: "Confirmed",
         notes: "Hello",
     },
     {
         id: 3,
-        client: "Bob Smith",
-        professional: "Badu Wood",
+        client: "Alice Johnson",
+        professional: "alice@example.com",
         dateTime: "06-06-2026 10:00",
-        status: paymentStatus.canceled,
+        status: "Cancelled",
         notes: "Hello",
     },
 ];
@@ -75,7 +69,7 @@ export interface PaymentTable {
     amount: number;
 }
 
-export const paymentTable = [
+export const paymentTable: PaymentTable[] = [
     {
         id: 1,
         client: "Alice Johnson",
@@ -91,4 +85,3 @@ export const paymentTable = [
         amount: 200,
     },
 ];
-
