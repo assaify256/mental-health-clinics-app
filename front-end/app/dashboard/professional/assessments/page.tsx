@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Trash } from "lucide-react";
 import CustomTable from "@/custom-components/table/table.main";
