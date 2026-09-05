@@ -1,7 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { AppointmentScheduleProps } from "@/data/appointment.admin";
+import { AppointmentScheduleProps } from "@/dummy-data/appointment.admin";
 import { DayButton, type DayButtonProps } from "react-day-picker";
 
 interface Props extends DayButtonProps {

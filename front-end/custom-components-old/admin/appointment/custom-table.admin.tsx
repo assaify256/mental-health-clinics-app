@@ -16,7 +16,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { AppointmentTable } from "@/data/table.admin";
+import { AppointmentTable } from "@/dummy-data/table.admin";
 import { Trash } from "lucide-react";
 
 
