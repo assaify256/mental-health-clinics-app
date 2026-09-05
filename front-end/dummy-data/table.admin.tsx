@@ -1,14 +1,12 @@
-import { Badge } from "@/components/ui/badge";
-
 export interface HomeTable {
     id: number | string;
     client: string;
     professional: string;
     dateTime: string;
-    status: string;
+    status: "Pending" | "Confirmed" | "Completed";
 }
 
-export const homeTable = [
+export const homeTable: HomeTable[] = [
     {
         id: 1,
         client: "Alice Johnson",
