@@ -13,7 +13,7 @@ export default function LoginPage() {
             <div className="flex justify-center gap-2 md:justify-start">
                 <a href="#" className="flex items-center gap-2 font-medium">
                     <div className="flex size-24 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                        <Image alt="App Logo" src={Logo} loading="eager"/>
+                        <Image alt="App Logo" src={Logo} />
                     </div>
                 </a>
             </div>

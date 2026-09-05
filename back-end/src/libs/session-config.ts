@@ -11,11 +11,9 @@ const sessionConfig = session({
   secret: process.env.SESSION_SECRET || 'development-secret',
   resave: false,
   saveUninitialized: false,
-  name: "connect.sid",
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
     httpOnly: true,
-    sameSite: "lax"
   },
 });
 

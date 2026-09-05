@@ -9,7 +9,10 @@ import User from "../models/user.model.ts";
 import Profile from "../models/profile.model.ts";
 import Professional from "../models/professional.model.ts";
 import Client from "../models/client.model.ts";
-import { mapUserEntity, toIdString } from "../services/data-access.ts";
+import {
+    mapUserEntity,
+    toIdString,
+} from "../services/data-access.ts";
 
 const authRoutes = express.Router();
 
@@ -24,23 +27,12 @@ authRoutes.post(
 
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            throw new HttpError(
-                401,
-                "INVALID_CREDENTIALS",
-                "Invalid credentials",
-            );
+            throw new HttpError(401, "INVALID_CREDENTIALS", "Invalid credentials");
         }
 
-        const isValidPassword = await bcrypt.compare(
-            password,
-            user.passwordHash,
-        );
+        const isValidPassword = await bcrypt.compare(password, user.passwordHash);
         if (!isValidPassword) {
-            throw new HttpError(
-                401,
-                "INVALID_CREDENTIALS",
-                "Invalid credentials",
-            );
+            throw new HttpError(401, "INVALID_CREDENTIALS", "Invalid credentials");
         }
 
         req.session.user = {
@@ -49,13 +41,7 @@ authRoutes.post(
             role: user.role,
         };
 
-        req.session.save((error) => {
-            if (error) {
-                console.error("Session save error:", error);
-                return res.status(500).json({ error: "Session error" });
-            }
-            return sendData(res, { user: req.session.user });
-        });
+        sendData(res, { user: req.session.user });
     }),
 );
 
@@ -144,10 +130,10 @@ authRoutes.post(
             });
         }
 
-        const mapped = mapUserEntity(user, {
-            firstName,
-            lastName,
-        } as unknown as Profile);
+        const mapped = mapUserEntity(
+            user,
+            { firstName, lastName } as unknown as Profile,
+        );
         sendData(
             res,
             {
