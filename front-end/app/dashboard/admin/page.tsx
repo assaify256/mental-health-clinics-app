@@ -44,6 +44,7 @@ const getDashboardData = async () => {
 
 export default async function Page() {
     const dashboardData = await getDashboardData();
+    console.log(dashboardData);
 
     return (
         <div className="flex flex-col p-8">
