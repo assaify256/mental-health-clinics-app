@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
     Table,
     TableBody,
@@ -17,11 +16,6 @@ interface Header {
 interface CustomTable {
     headers: Header[];
     data: Record<string, string | number | null | React.ReactNode>[];
-    actions?: {
-        icon: React.ReactNode;
-        className: string;
-        name: string;
-    }[];
 }
 
 export const badgify = (
@@ -29,7 +23,7 @@ export const badgify = (
 ) => {
     let obj;
     let arr;
-    arr = structuredClone(data);
+    arr = structuredClone(data)
     for (obj of arr) {
         obj.status = <Badge>{obj.status}</Badge>;
     }
@@ -38,8 +32,7 @@ export const badgify = (
 
 export default function CustomTable({
     headers = [],
-    data = [],
-    actions,
+    data,
     ...props
 }: CustomTable) {
     return (
@@ -49,26 +42,15 @@ export default function CustomTable({
                     {headers.map((header) => (
                         <TableHead key={header.key}>{header.name}</TableHead>
                     ))}
-                    {actions && <TableHead>Action</TableHead>}
                 </TableRow>
             </TableHeader>
             <TableBody>
                 {data.map((row) => (
                     <TableRow key={row.id?.toString()}>
-                        {headers.map((header) => (
-                            <TableCell key={header.key}>
-                                {row[header.key]}
-                            </TableCell>
-                        ))}
-                        {actions && (
-                            <TableCell>
-                                {actions.map((action) => (
-                                    <Button key={action.name} className={action.className}>
-                                        {action.icon}
-                                    </Button>
-                                ))}
-                            </TableCell>
-                        )}
+                        {headers
+                            .map((header) => (
+                                <TableCell key={header.key}>{row[header.key]}</TableCell>
+                            ))}
                     </TableRow>
                 ))}
             </TableBody>

@@ -60,12 +60,12 @@ export const menuItem = {
         {
             title: "Assessments",
             icon: <ClipboardPen />,
-            url: "/dashboard/professional/assessments",
+            url: "/dashboard/professional/prescriptions",
         },
         {
             title: "records",
             icon: <ClipboardList />,
-            url: "/dashboard/professional/records",
+            url: "/dashboard/professional/prescriptions",
         },
         {
             title: "Schedule",
