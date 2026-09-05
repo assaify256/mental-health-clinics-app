@@ -1,7 +1,7 @@
 import express from "express";
 import createRoutes from "./src/routes/routes.ts";
 import sequelize, { connectDB } from "./src/libs/db-config.ts";
-import sessionConfig, { store } from "./src/libs/session-config.ts";
+import { store } from "./src/libs/session-config.ts";
 import cors from "cors";
 import session from "express-session";
 import associate from "./src/libs/associate.ts";
@@ -12,14 +12,24 @@ const PORT = 8080;
 const app = express();
 
 //Middleware
+app.use(cors());
+app.use(express.json());
 app.use(
-    cors({
-        origin: "http://localhost:3000",
-        credentials: true,
+    session({
+        secret: "secret",
+        resave: false,
+        name: "connect.sid",
+        store: store,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+            maxAge: 1000 * 60 * 60 * 24,
+        },
     }),
 );
-app.use(sessionConfig);
-app.use(express.json());
+
 //assign routes
 createRoutes(app);
 
@@ -29,8 +39,8 @@ async function startServer() {
         associate(() => console.log("Associating tables"));
 
         // Local iteration strategy (issue #4): sync schema, then backfill legacy data.
-        await sequelize.sync({ alter: true, force: true });
-        // await runLegacyDataMigration();
+        await sequelize.sync({ alter: true });
+        await runLegacyDataMigration();
         await runBootstrapSeed();
 
         const [ownerlessClients] = await sequelize.query(

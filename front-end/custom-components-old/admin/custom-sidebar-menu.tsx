@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    SidebarFooter,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -40,7 +39,6 @@ export default function CustomSidebarMenu({ role }: { role: "admin" | "professio
                     </SidebarMenuButton>
                 </SidebarMenuItem>
             ))}
-            <SidebarFooter>A</SidebarFooter>
         </SidebarMenu>
     );
 }
