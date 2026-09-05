@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 
 import CustomCard from "@/custom-components/cards/custom-card";
+import CustomChart from "@/custom-components-old/admin/home/custom-chart.admin";
 import CustomQuickList from "@/custom-components-old/admin/home/custom-quick-action.admin";
 import CustomTable, { badgify } from "@/custom-components/table/table.main";
 import { homeTable } from "@/data/table.admin";
@@ -12,7 +13,6 @@ import {
     Users,
 } from "lucide-react";
 import { containerClass, mainDescClass, mainDivClass, mainTitleClass } from "@/styles/classNames.admin";
-import AppointmentStatusOverview from "./appointment-status-overview.chart";
 
 const tableHeader = [
     { key: "client", name: "Client" },
@@ -64,7 +64,7 @@ export default async function Page() {
             <div className="flex flex-col md:flex-row">
                 <Card className={`m-2 md:flex-2 shadow-2xl`}>
                     <CardContent>
-                        <AppointmentStatusOverview/>
+                        <CustomChart />
                     </CardContent>
                 </Card>
                 <CustomQuickList className="flex-1 m-2" />

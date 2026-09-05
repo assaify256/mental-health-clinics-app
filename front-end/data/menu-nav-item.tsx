@@ -18,7 +18,7 @@ export const menuItem = {
         {
             title: "Home",
             icon: <House />,
-            url: "/dashboard/admin",
+            url: "/dashboard/admin/",
         },
         {
             title: "Appointments",
